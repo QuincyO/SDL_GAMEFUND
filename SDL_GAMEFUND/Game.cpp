@@ -115,6 +115,7 @@ void Game::Update(float deltaTime)
 	//if (KeyDown((SDL_SCANCODE_D)))
 	//{
 	//	m_RectangleTransform.x += kRectangleSpeed * deltaTime;
+	// //
 	//}
 }
 void Game::Render()

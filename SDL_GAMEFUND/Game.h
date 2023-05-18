@@ -8,11 +8,11 @@
 class Game
 {
 private:
-	static const int kWidth = 1024;
-	static const int kHeight = 768;
-	static const int kRectangleSpeed = 600;
+
 	Game();
 public:
+	static const int kWidth = 1024;
+	static const int kHeight = 768;
 	static Game& GetInstance();
 
 	int Init(const char* Title);
@@ -31,7 +31,6 @@ private:
 	SDL_Renderer* p_Renderer;
 	SDL_Window* p_Window;
 
-	SDL_FRect m_RectangleTransform;
 	const Uint8* m_keyStates;
 
 	bool m_running;

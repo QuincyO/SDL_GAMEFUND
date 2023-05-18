@@ -5,7 +5,6 @@ Game::Game()
 	,m_running{false}
 	,SCREEN_HEIGHT{ 1024 }
 	,SCREEN_WIDTH{896}
-	,m_RectangleTransform{kWidth/2,kHeight/2,100,100}
 	,m_keyStates{ nullptr }
 {
 

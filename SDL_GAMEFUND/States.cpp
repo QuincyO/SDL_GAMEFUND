@@ -37,19 +37,49 @@ void TitleState::Exit()
 
 void GameState::Enter()
 {
-	std::cout << "Entering GameState" << std::endl;
+	m_gameObjects.push_back(new GameObject(100, 100, 30, 30));
+	m_gameObjects.push_back(new GameObject(400, 100, 30, 30));
+	m_gameObjects.push_back(new GameObject(600, 100, 30, 30));
+
+	m_player = (new GameObject(250, 250, 50, 50,255,0,255,255));
+	m_gameObjects.push_back(m_player);
+
 }
 
 void GameState::Update(float deltaTime)
 {
+	Game& GameInstance = Game::GetInstance();
+
 	if (Game::GetInstance().KeyDown(SDL_SCANCODE_H))
 	{
 		StateManager::ChangeState(new TitleState());
 	}
-	if (Game::GetInstance().KeyDown(SDL_SCANCODE_P))
+	else if  (Game::GetInstance().KeyDown(SDL_SCANCODE_P))
 	{
 		StateManager::PushState(new PauseState());
 	}
+	else
+	{
+		if (GameInstance.KeyDown(SDL_SCANCODE_A))
+		{
+			m_player->UpdatePositionX(-kPlayerSpeed*deltaTime);
+		}
+		 if (GameInstance.KeyDown(SDL_SCANCODE_D))
+		{
+			m_player->UpdatePositionX(kPlayerSpeed * deltaTime);
+		}
+		 if (GameInstance.KeyDown(SDL_SCANCODE_W))
+		{
+			m_player->UpdatePositionY(-kPlayerSpeed * deltaTime);
+		}
+		 if (GameInstance.KeyDown(SDL_SCANCODE_S))
+		{
+			m_player->UpdatePositionY(kPlayerSpeed * deltaTime);
+		}
+	}
+
+		
+	
 }
 
 void GameState::Render()
@@ -57,11 +87,22 @@ void GameState::Render()
 	std::cout << "Rendering Gamestate..." << std::endl;
 	SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 0, 0, 255, 255);
 	SDL_RenderClear(Game::GetInstance().GetRenderer());
+
+	for (GameObject*object : m_gameObjects)
+	{
+		object->Draw(Game::GetInstance().GetRenderer());
+	}
+	SDL_RenderPresent(Game::GetInstance().GetRenderer());
 }
 
 void GameState::Exit()
 {
 	std::cout<<"Exiting GameState.." << std::endl;
+	for (GameObject* Objects : m_gameObjects)
+	{
+		delete Objects;
+		Objects = nullptr;
+	}
 }
 
 void GameState::Resume()
@@ -101,4 +142,5 @@ void PauseState::Render()
 void PauseState::Exit()
 {
 	std::cout << "Exiting Pause State..." << std::endl;
+
 }

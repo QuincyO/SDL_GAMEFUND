@@ -1,5 +1,6 @@
 #pragma once
-
+#include <vector>
+#include "GameObject.h"
 class State
 {
 public:
@@ -26,6 +27,10 @@ public:
 
 class GameState : public State
 {
+	std::vector<GameObject*> m_gameObjects;
+	GameObject* m_player;
+	float kPlayerSpeed = 500;
+
 public:
 	virtual void Enter() override;
 	virtual void Update(float deltaTime) override;

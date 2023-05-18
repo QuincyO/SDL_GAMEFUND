@@ -1,3 +1,4 @@
+#define SDL_MAIN_HANDLED
 #include <iostream>
 #include "Game.h"
 #include <chrono>
@@ -5,6 +6,7 @@
 
 int main(int argc, char* argv[])
 {
+	SDL_SetMainReady();
 	Game& myGame = Game::GetInstance();
 	int result = myGame.Init("Quincy's Box");
 	if (result == 0)

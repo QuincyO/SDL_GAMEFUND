@@ -102,7 +102,6 @@ void GameState::Render()
 	{
 		object->Draw(Game::GetInstance().GetRenderer());
 	}
-	SDL_RenderPresent(Game::GetInstance().GetRenderer());
 }
 
 void GameState::Exit()

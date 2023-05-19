@@ -22,6 +22,8 @@ public:
 	virtual void Update(float deltaTime) override;
 	virtual void Render() override;
 	virtual void Exit() override;
+
+	float timer;
 };
 
 
@@ -30,6 +32,7 @@ class GameState : public State
 	std::vector<GameObject*> m_gameObjects;
 	GameObject* m_player;
 	float kPlayerSpeed = 500;
+	float m_timer;
 
 public:
 	virtual void Enter() override;
@@ -47,4 +50,42 @@ public:
 	virtual void Update(float deltaTime) override;
 	virtual void Render() override;
 	virtual void Exit() override;
+};
+
+class MenuState : public State
+{
+public:
+	virtual void Enter() override;
+	virtual void Update(float deltaTime) override;
+	virtual void Render() override;
+	virtual void Exit() override;
+	virtual void Resume() override;
+};
+
+class CreditState : public State
+{
+public:
+	virtual void Enter() override;
+	virtual void Update(float deltaTime) override;
+	virtual void Render() override;
+	virtual void Exit() override;
+	virtual void Resume() override;
+};
+
+class WinState : public State
+{
+	virtual void Enter() override;
+	virtual void Update(float deltaTime) override;
+	virtual void Render() override;
+	virtual void Exit() override;
+	virtual void Resume() override;
+};
+
+class LoseState : public State
+{
+	virtual void Enter() override;
+	virtual void Update(float deltaTime) override;
+	virtual void Render() override;
+	virtual void Exit() override;
+	virtual void Resume() override;
 };

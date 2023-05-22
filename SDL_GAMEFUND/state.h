@@ -31,6 +31,7 @@ class GameState : public State
 {
 	std::vector<GameObject*> m_gameObjects;
 	GameObject* m_player;
+	GameObject* killBox;
 	float kPlayerSpeed = 500;
 	float m_timer;
 

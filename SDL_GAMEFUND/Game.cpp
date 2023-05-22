@@ -99,34 +99,11 @@ void Game::Update(float deltaTime)
 {
 
 	StateManager::Update(deltaTime);
-	//if (KeyDown((SDL_SCANCODE_W)))
-	//{
-	//	m_RectangleTransform.y -= kRectangleSpeed * deltaTime;
-	//}
-	//if (KeyDown((SDL_SCANCODE_S)))
-	//{
-	//	m_RectangleTransform.y+= kRectangleSpeed*deltaTime;
-	//}
-	//if (KeyDown((SDL_SCANCODE_A)))
-	//{
-	//	m_RectangleTransform.x-= kRectangleSpeed*deltaTime;
-	//}
-	//if (KeyDown((SDL_SCANCODE_D)))
-	//{
-	//	m_RectangleTransform.x += kRectangleSpeed * deltaTime;
-	// //
-	//}
+
 }
 void Game::Render()
 {
-	//  //Drawing Background and Clearing Renderer
-	//  SDL_SetRenderDrawColor(p_Renderer, 0, 128, 255, 255);
-	//  SDL_RenderClear(p_Renderer);
-	//  
-	//  
-	//  //Drawing things
-	//  SDL_SetRenderDrawColor(p_Renderer, 0, 0, 255, 255);
-	//  SDL_RenderFillRectF(p_Renderer, &m_RectangleTransform);
+
 
 	StateManager::Render();
 

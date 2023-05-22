@@ -49,7 +49,8 @@ void GameState::Enter()
 	m_gameObjects.push_back(new GameObject(100, 100, 30, 30));
 	m_gameObjects.push_back(new GameObject(400, 100, 30, 30));
 	m_gameObjects.push_back(new GameObject(600, 100, 30, 30));
-
+	killBox = new GameObject(500, 800, 30, 30, 255, 0, 0, 255);
+	m_gameObjects.push_back(killBox);
 	m_player = (new GameObject(250, 250, 50, 50,0,0,0,255));
 	m_gameObjects.push_back(m_player);
 	m_timer = 0.0f;
@@ -64,8 +65,7 @@ void GameState::Update(float deltaTime)
 	{
 		StateManager::PushState(new PauseState());
 	}
-	else
-	{
+
 		if (GameInstance.KeyDown(SDL_SCANCODE_A))
 		{
 			m_player->UpdatePositionX(-kPlayerSpeed*deltaTime);
@@ -82,11 +82,53 @@ void GameState::Update(float deltaTime)
 		{
 			m_player->UpdatePositionY(kPlayerSpeed * deltaTime);
 		}
-	}
+
+
+		 for (std::vector<GameObject*>::iterator it = m_gameObjects.begin(); it != m_gameObjects.end();)
+		 {
+			 GameObject* itObject = *it;
+
+			 if (itObject != m_player)
+			 {
+				 if (SDL_HasIntersectionF(&m_player->GetTransform(), &killBox->GetTransform()))
+				 {
+					 it = m_gameObjects.erase(it);
+					 delete itObject;
+					 itObject = nullptr;
+					 it++;
+					 StateManager::ChangeState(new LoseState);
+					 break;
+				 }
+				 if (SDL_HasIntersectionF(&m_player->GetTransform(), &itObject->GetTransform()))
+				 {
+					 it = m_gameObjects.erase(it);
+					 delete itObject;
+					 itObject = nullptr;
+
+				 }
+				 else
+				 {
+					 it++;
+				 }
+			 }
+			 else
+			 {
+				 it++;
+			 }
+
+
+
+		 }
+
+	
 	if (m_timer > 20.0f)
 	{
 		StateManager::ChangeState(new WinState);
 	}
+
+
+
+
 		
 	m_timer += deltaTime;
 	
@@ -94,7 +136,7 @@ void GameState::Update(float deltaTime)
 
 void GameState::Render()
 {
-	std::cout << "Rendering Gamestate..." << std::endl;
+	//std::cout << "Rendering Gamestate..." << std::endl;
 	SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 0, 0, 255, 255);
 	SDL_RenderClear(Game::GetInstance().GetRenderer());
 
@@ -137,7 +179,7 @@ void PauseState::Update(float deltaTime)
 
 void PauseState::Render()
 {
-	std::cout << "Rendering Pause State" << std::endl;
+	//std::cout << "Rendering Pause State" << std::endl;
 	SDL_Rect rect = { 256,128,512,512 };
 	//First Render the Gamestate
 	StateManager::GetStates().front()->Render();

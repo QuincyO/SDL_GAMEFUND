@@ -51,7 +51,7 @@ int Game::Init(const char* Title)
 	}
 
 
-	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048))
+	if (true)//Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048))
 	{
 		std::cout << "Audio Opened:" << std::endl;
 	}

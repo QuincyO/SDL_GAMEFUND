@@ -2,7 +2,6 @@
 #include <vector>
 #include "GameObject.h"
 #include "SDL_image.h"
-#include "SDL_mixer.h"
 class GameObject;
 class AnimatedSprite;
 
@@ -42,7 +41,7 @@ class GameState : public State
 	SDL_Texture* m_playerTexture;
 	SDL_Texture* m_objectTexture;
 
-	Mix_Music* m_pMusic;
+	//Mix_Music* m_pMusic;
 
 
 

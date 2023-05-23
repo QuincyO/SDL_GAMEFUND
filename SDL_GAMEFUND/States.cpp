@@ -81,8 +81,8 @@ void GameState::Enter()
 	m_playerTexture = IMG_LoadTexture(Game::GetInstance().GetRenderer(), "assets/goomba.png");
 	m_objectTexture = IMG_LoadTexture(Game::GetInstance().GetRenderer(), "assets/portal.png");
 
-	m_pMusic = Mix_LoadMUS("assets/MainMenu.mp3");
-	Mix_PlayMusic(m_pMusic, -1);
+	//m_pMusic = Mix_LoadMUS("assets/MainMenu.mp3");
+	//Mix_PlayMusic(m_pMusic, -1);
 
 
 }
@@ -202,8 +202,8 @@ void GameState::Exit()
 	SDL_DestroyTexture(m_objectTexture);
 	SDL_DestroyTexture(m_playerTexture);
 
-	Mix_FreeMusic(m_pMusic);
-	m_pMusic = nullptr;
+	//Mix_FreeMusic(m_pMusic);
+	//m_pMusic = nullptr;
 }
 
 void GameState::Resume()

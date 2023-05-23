@@ -2,6 +2,8 @@
 #include "Game.h"
 #include "StateManager.h"
 #include <iostream>
+#include "MathManager.h"
+#include "AnimatedSprite.h"
 
 //Begin Titlescreen
 
@@ -46,14 +48,43 @@ void TitleState::Exit()
 
 void GameState::Enter()
 {
+	/*
 	m_gameObjects.push_back(new GameObject(100, 100, 30, 30));
 	m_gameObjects.push_back(new GameObject(400, 100, 30, 30));
 	m_gameObjects.push_back(new GameObject(600, 100, 30, 30));
+	//*/
+
 	killBox = new GameObject(500, 800, 30, 30, 255, 0, 0, 255);
-	m_gameObjects.push_back(killBox);
-	m_player = (new GameObject(250, 250, 50, 50,0,0,0,255));
-	m_gameObjects.push_back(m_player);
+
+	SDL_Rect srcTrans = { 0,0,64,64 };
+
+
+	m_gameObjects.push_back(new AnimatedSprite(0,1,3,srcTrans,{100,100,64,64 }));
+	m_gameObjects.push_back(new AnimatedSprite(0, 1, 3, srcTrans, { 400,100,64,64 }));
+	m_gameObjects.push_back(new AnimatedSprite(0,1,3,srcTrans,{700,100,64,64 }));
+
+
+	m_player = (new GameObject(250,250,100,100));
 	m_timer = 0.0f;
+	/*
+	SDL_Surface* pImageSurface = IMG_Load("AssetFilePath");
+	if (pImageSurface == NULL)
+	{
+		std::cout << "Failed to load Image" << std::endl;
+	}
+	else
+	{
+		m_texture = SDL_CreateTextureFromSurface(Game::GetInstance().GetRenderer(), pImageSurface);
+		SDL_FreeSurface(pImageSurface);
+	}
+	*/
+	m_playerTexture = IMG_LoadTexture(Game::GetInstance().GetRenderer(), "assets/goomba.png");
+	m_objectTexture = IMG_LoadTexture(Game::GetInstance().GetRenderer(), "assets/portal.png");
+
+	m_pMusic = Mix_LoadMUS("assets/MainMenu.mp3");
+	Mix_PlayMusic(m_pMusic, -1);
+
+
 }
 
 void GameState::Update(float deltaTime)
@@ -84,12 +115,12 @@ void GameState::Update(float deltaTime)
 		}
 
 
-		 for (std::vector<GameObject*>::iterator it = m_gameObjects.begin(); it != m_gameObjects.end();)
+		 for (std::vector<AnimatedSprite*>::iterator it = m_gameObjects.begin(); it != m_gameObjects.end();)
 		 {
-			 GameObject* itObject = *it;
+			 AnimatedSprite* itObject = *it;
 
-			 if (itObject != m_player)
-			 {
+			
+			 
 				 if (SDL_HasIntersectionF(&m_player->GetTransform(), &killBox->GetTransform()))
 				 {
 					 it = m_gameObjects.erase(it);
@@ -99,7 +130,7 @@ void GameState::Update(float deltaTime)
 					 StateManager::ChangeState(new LoseState);
 					 break;
 				 }
-				 if (SDL_HasIntersectionF(&m_player->GetTransform(), &itObject->GetTransform()))
+				 if (SDL_HasIntersectionF(&m_player->GetTransform(), &itObject->GetDestinationTransform()))
 				 {
 					 it = m_gameObjects.erase(it);
 					 delete itObject;
@@ -110,16 +141,18 @@ void GameState::Update(float deltaTime)
 				 {
 					 it++;
 				 }
-			 }
-			 else
-			 {
-				 it++;
-			 }
+			 
+	
 
 
 
 		 }
 
+
+		 for (AnimatedSprite* objects : m_gameObjects)
+		 {
+			 objects->Animate(deltaTime);
+		 }
 	
 	if (m_timer > 20.0f)
 	{
@@ -140,20 +173,37 @@ void GameState::Render()
 	SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 0, 0, 255, 255);
 	SDL_RenderClear(Game::GetInstance().GetRenderer());
 
-	for (GameObject*object : m_gameObjects)
+	for (AnimatedSprite*object : m_gameObjects)
 	{
-		object->Draw(Game::GetInstance().GetRenderer());
+
+			SDL_RenderCopyExF(Game::GetInstance().GetRenderer(), m_objectTexture, &object->GetSourceTransform(), &object->GetDestinationTransform(),
+				object->GetAngle(), 0, SDL_FLIP_NONE);
+		
 	}
+
+	SDL_Rect playerRect = MathManager::ConvertFRect2Rect(m_player->GetTransform());
+	SDL_RenderCopy(Game::GetInstance().GetRenderer(), m_playerTexture, NULL, &playerRect);
 }
 
 void GameState::Exit()
 {
 	std::cout<<"Exiting GameState.." << std::endl;
-	for (GameObject* Objects : m_gameObjects)
+	for (AnimatedSprite* Objects : m_gameObjects)
 	{
 		delete Objects;
 		Objects = nullptr;
 	}
+	delete m_player;
+	m_player = nullptr;
+
+	delete killBox;
+	killBox = nullptr;
+
+	SDL_DestroyTexture(m_objectTexture);
+	SDL_DestroyTexture(m_playerTexture);
+
+	Mix_FreeMusic(m_pMusic);
+	m_pMusic = nullptr;
 }
 
 void GameState::Resume()

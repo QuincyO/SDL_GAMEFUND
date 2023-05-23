@@ -1,6 +1,11 @@
 #pragma once
 #include <vector>
 #include "GameObject.h"
+#include "SDL_image.h"
+#include "SDL_mixer.h"
+class GameObject;
+class AnimatedSprite;
+
 class State
 {
 public:
@@ -29,11 +34,17 @@ public:
 
 class GameState : public State
 {
-	std::vector<GameObject*> m_gameObjects;
+	std::vector<AnimatedSprite*> m_gameObjects;
 	GameObject* m_player;
 	GameObject* killBox;
 	float kPlayerSpeed = 500;
 	float m_timer;
+	SDL_Texture* m_playerTexture;
+	SDL_Texture* m_objectTexture;
+
+	Mix_Music* m_pMusic;
+
+
 
 public:
 	virtual void Enter() override;

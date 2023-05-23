@@ -3,6 +3,7 @@
 #include <iostream>
 #include "StateManager.h"
 #include "state.h"
+#include "SDL_mixer.h"
 
 
 class Game

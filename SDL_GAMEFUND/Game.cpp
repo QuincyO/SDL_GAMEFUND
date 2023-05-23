@@ -50,6 +50,11 @@ int Game::Init(const char* Title)
 		return 3;
 	}
 
+
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048))
+	{
+		std::cout << "Audio Opened:" << std::endl;
+	}
 	StateManager::PushState(new TitleState());
 	m_keyStates = SDL_GetKeyboardState(nullptr);
 	m_running = true;

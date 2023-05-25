@@ -10,6 +10,11 @@ Game::Game()
 
 }
 
+Game& Game::GetInstance()
+{
+	static Game* pInstance = new Game();
+	return *pInstance;
+}
 
 int Game::Init(const char* Title)
 {
@@ -66,11 +71,7 @@ SDL_Renderer* Game::GetRenderer()
 {
 	return p_Renderer;
 }
-Game& Game::GetInstance()
-{
-	static Game* pInstance = new Game();
-	return *pInstance;
-}
+
 
 bool Game::IsRunning()
 {

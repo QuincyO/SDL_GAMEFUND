@@ -32,7 +32,7 @@ void TitleState::Update(float deltaTime)
 
 void TitleState::Render()
 {
-	std::cout << "Rendering Title Screen" << std::endl;
+	//std::cout << "Rendering Title Screen" << std::endl;
 	SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 255, 255, 0, 255);
 	SDL_RenderClear(Game::GetInstance().GetRenderer());
 
@@ -135,6 +135,8 @@ void GameState::Update(float deltaTime)
 					 it = m_gameObjects.erase(it);
 					 delete itObject;
 					 itObject = nullptr;
+					 StateManager::ChangeState(new LoseState);
+					 break;
 
 				 }
 				 else
@@ -221,7 +223,7 @@ void PauseState::Enter()
 
 void PauseState::Update(float deltaTime)
 {
-	if (Game::GetInstance().GetInstance().KeyDown(SDL_SCANCODE_R))
+	if (Game::GetInstance().GetInstance().KeyDown(SDL_SCANCODE_ESCAPE))
 	{
 		StateManager::PopState();
 	}

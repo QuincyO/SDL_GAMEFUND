@@ -8,7 +8,7 @@ int main(int argc, char* argv[])
 {
 	SDL_SetMainReady();
 	Game& myGame = Game::GetInstance();
-	int result = myGame.Init("Quincy's Box");
+	int result = myGame.Init("Labs_OrtaQuincy");
 	if (result == 0)
 	{
 		//Allocate a time_point outside that loop so that it is retained between frames

@@ -48,36 +48,20 @@ void TitleState::Exit()
 
 void GameState::Enter()
 {
-	/*
-	m_gameObjects.push_back(new GameObject(100, 100, 30, 30));
-	m_gameObjects.push_back(new GameObject(400, 100, 30, 30));
-	m_gameObjects.push_back(new GameObject(600, 100, 30, 30));
-	//*/
 
 	killBox = new GameObject(500, 800, 30, 30, 255, 0, 0, 255);
 
 	SDL_Rect srcTrans = { 0,0,64,64 };
 
 
-	m_gameObjects.push_back(new AnimatedSprite(0,1,3,srcTrans,{100,100,64,64 }));
-	m_gameObjects.push_back(new AnimatedSprite(0, 1, 3, srcTrans, { 400,100,64,64 }));
-	m_gameObjects.push_back(new AnimatedSprite(0,1,3,srcTrans,{700,100,64,64 }));
+	m_gameObjects.push_back(new AnimatedSprite(0,.1,3,srcTrans,{100,100,64,64 }));
+	m_gameObjects.push_back(new AnimatedSprite(0, .1, 3, srcTrans, { 400,100,64,64 }));
+	m_gameObjects.push_back(new AnimatedSprite(0,.1,3,srcTrans,{700,100,64,64 }));
 
 
 	m_player = (new GameObject(250,250,100,100));
 	m_timer = 0.0f;
-	/*
-	SDL_Surface* pImageSurface = IMG_Load("AssetFilePath");
-	if (pImageSurface == NULL)
-	{
-		std::cout << "Failed to load Image" << std::endl;
-	}
-	else
-	{
-		m_texture = SDL_CreateTextureFromSurface(Game::GetInstance().GetRenderer(), pImageSurface);
-		SDL_FreeSurface(pImageSurface);
-	}
-	*/
+
 	m_playerTexture = IMG_LoadTexture(Game::GetInstance().GetRenderer(), "assets/goomba.png");
 	m_objectTexture = IMG_LoadTexture(Game::GetInstance().GetRenderer(), "assets/portal.png");
 

@@ -17,7 +17,7 @@ void AnimatedSprite::Animate(float deltaTime)
 	m_currentTime += deltaTime;
 	if (m_currentTime > m_frameRate)
 	{
-		m_currentTime = 0.1;
+		m_currentTime = m_currentTime - m_frameRate;
 		m_currentSpriteIndex++;
 		if (m_currentSpriteIndex == m_maxSprites)
 		{
@@ -25,6 +25,6 @@ void AnimatedSprite::Animate(float deltaTime)
 		}
 	}
 
-	m_sourceTransform.x = m_sourceTransform.x * m_currentSpriteIndex;
+	m_sourceTransform.x = m_sourceTransform.w * m_currentSpriteIndex;
 }
 

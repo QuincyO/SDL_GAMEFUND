@@ -4,6 +4,7 @@
 #include <iostream>
 #include "MathManager.h"
 #include "AnimatedSprite.h"
+#include "TiledLevel.h"
 
 //Begin Titlescreen
 
@@ -50,23 +51,15 @@ void GameState::Enter()
 {
 
 
-	SDL_Rect srcTrans = { 0,0,64,64 };
+	TextureManager::Load("assets/goomba.png", "player");
+	TextureManager::Load("assets/portal.png", "portal");
 
-
-	m_gameObjects.push_back(new AnimatedSprite(0,.1,3,srcTrans,{100,100,64,64 }));
-	m_gameObjects.push_back(new AnimatedSprite(0, .1, 3, srcTrans, { 400,100,64,64 }));
-	m_gameObjects.push_back(new AnimatedSprite(0,.1,3,srcTrans,{700,100,64,64 }));
-
-
-	m_player = (new GameObject(250,250,100,100));
-	m_timer = 0.0f;
-
-	m_playerTexture = IMG_LoadTexture(Game::GetInstance().GetRenderer(), "assets/goomba.png");
-	m_objectTexture = IMG_LoadTexture(Game::GetInstance().GetRenderer(), "assets/portal.png");
 	m_pMusic = Mix_LoadMUS("assets/Caketown1.mp3");
 
 	Mix_PlayMusic(m_pMusic, -1);
 
+	TextureManager::Load("assets/Images/Tiles.png", "tiles");
+	m_pLevel = new TiledLevel(5, 8, 32, 32, "assets/Data/Tiledata.txt", "assets/Data/Level1.txt", "tiles");
 
 	//m_pMusic = Mix_LoadMUS("assets/MainMenu.mp3");
 	//Mix_PlayMusic(m_pMusic, -1);
@@ -79,70 +72,13 @@ void GameState::Update(float deltaTime)
 	Game& GameInstance = Game::GetInstance();
 
 
-	if  (Game::GetInstance().KeyDown(SDL_SCANCODE_P))
-	{
-		StateManager::PushState(new PauseState());
-	}
-
-		if (GameInstance.KeyDown(SDL_SCANCODE_A))
-		{
-			m_player->UpdatePositionX(-kPlayerSpeed*deltaTime);
-		}
-		 if (GameInstance.KeyDown(SDL_SCANCODE_D))
-		{
-			m_player->UpdatePositionX(kPlayerSpeed * deltaTime);
-		}
-		 if (GameInstance.KeyDown(SDL_SCANCODE_W))
-		{
-			m_player->UpdatePositionY(-kPlayerSpeed * deltaTime);
-		}
-		 if (GameInstance.KeyDown(SDL_SCANCODE_S))
-		{
-			m_player->UpdatePositionY(kPlayerSpeed * deltaTime);
-		}
 
 
-		 for (std::vector<AnimatedSprite*>::iterator it = m_gameObjects.begin(); it != m_gameObjects.end();)
-		 {
-			 AnimatedSprite* itObject = *it;
 
+
+
+	m_pLevel->Update(deltaTime);
 		
-				 if (SDL_HasIntersectionF(&m_player->GetTransform(), &itObject->GetDestinationTransform()))
-				 {
-					 it = m_gameObjects.erase(it);
-					 delete itObject;
-					 itObject = nullptr;
-					 StateManager::ChangeState(new LoseState);
-					 break;
-
-				 }
-				 else
-				 {
-					 it++;
-				 }
-			 
-	
-
-
-
-		 }
-
-
-		 for (AnimatedSprite* objects : m_gameObjects)
-		 {
-			 objects->Animate(deltaTime);
-		 }
-	
-	if (m_timer > 20.0f)
-	{
-		StateManager::ChangeState(new WinState);
-	}
-
-
-
-
-		
-	m_timer += deltaTime;
 	
 }
 
@@ -152,35 +88,22 @@ void GameState::Render()
 	SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 0, 0, 255, 255);
 	SDL_RenderClear(Game::GetInstance().GetRenderer());
 
-	for (AnimatedSprite*object : m_gameObjects)
-	{
 
-			SDL_RenderCopyExF(Game::GetInstance().GetRenderer(), m_objectTexture, &object->GetSourceTransform(), &object->GetDestinationTransform(),
-				object->GetAngle(), 0, SDL_FLIP_NONE);
-		
-	}
 
-	SDL_Rect playerRect = MathManager::ConvertFRect2Rect(m_player->GetTransform());
-	SDL_RenderCopy(Game::GetInstance().GetRenderer(), m_playerTexture, NULL, &playerRect);
+	m_pLevel->Render();
+
+	//SDL_Rect playerRect = MathManager::ConvertFRect2Rect(m_player->GetTransform());
+	//SDL_RenderCopy(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("player"), NULL, &playerRect);
 }
 
 void GameState::Exit()
 {
 	std::cout<<"Exiting GameState.." << std::endl;
-	for (AnimatedSprite* Objects : m_gameObjects)
-	{
-		delete Objects;
-		Objects = nullptr;
-	}
-	delete m_player;
-	m_player = nullptr;
+	delete m_pLevel;
+	m_pLevel = nullptr;
 
-	delete killBox;
-	killBox = nullptr;
+	TextureManager::Unload("tiles");
 
-	SDL_DestroyTexture(m_objectTexture);
-	SDL_DestroyTexture(m_playerTexture);
-	
 	Mix_FreeMusic(m_pMusic);
 	m_pMusic = nullptr;
 	//Mix_FreeMusic(m_pMusic);

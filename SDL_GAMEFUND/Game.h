@@ -2,6 +2,7 @@
 #include <SDL.h>
 #include <iostream>
 #include "StateManager.h"
+#include "TextureManager.h"
 #include "state.h"
 
 

@@ -1,5 +1,6 @@
 #include "Game.h"
 
+
 Game::Game()
 	:p_Renderer {nullptr}
 	,p_Window{nullptr}
@@ -126,6 +127,8 @@ void Game::Clean()
 	SDL_DestroyRenderer(p_Renderer);
 	SDL_DestroyWindow(p_Window);
 	SDL_Quit();
+
+	TextureManager::Quit();
 	StateManager::Quit();
 
 	delete this;

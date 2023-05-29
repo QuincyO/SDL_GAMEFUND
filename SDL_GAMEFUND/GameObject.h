@@ -4,16 +4,20 @@
 class GameObject
 {
 public:
-	GameObject(float x,float y,float width,float height, Uint8 r =255 , Uint8 g =255, Uint8 b =255, Uint8 a=255);
+	GameObject()
+		:m_destinationTransform({ 0,0,0,0 })
+	{}
+
+	GameObject(const SDL_FRect destination)
+		:m_destinationTransform(destination)
+	{}
+
+	virtual void Update(float deltaTime) = 0;
+	virtual void Render() = 0;
+	SDL_FRect* GetDestinationTransform() { return &m_destinationTransform; }
 
 
-	void Draw(SDL_Renderer* pRen);
-	void UpdatePositionX(float x);
-	void UpdatePositionY(float y);
-	SDL_FRect& GetTransform() { return m_transform; };
+protected:
 
-private:
-	float kSpeed = 500;
-	SDL_Color m_color;
-	SDL_FRect m_transform;
+	SDL_FRect m_destinationTransform;
 };

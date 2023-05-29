@@ -1,4 +1,5 @@
 #include "Game.h"
+
 Game::Game()
 	:p_Renderer {nullptr}
 	,p_Window{nullptr}
@@ -56,10 +57,12 @@ int Game::Init(const char* Title)
 	}
 
 
-	if (true)//Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048))
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) == 0)
 	{
 		std::cout << "Audio Opened:" << std::endl;
 	}
+
+
 	StateManager::PushState(new TitleState());
 	m_keyStates = SDL_GetKeyboardState(nullptr);
 	m_running = true;

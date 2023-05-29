@@ -49,7 +49,6 @@ void TitleState::Exit()
 void GameState::Enter()
 {
 
-	killBox = new GameObject(500, 800, 30, 30, 255, 0, 0, 255);
 
 	SDL_Rect srcTrans = { 0,0,64,64 };
 
@@ -64,6 +63,10 @@ void GameState::Enter()
 
 	m_playerTexture = IMG_LoadTexture(Game::GetInstance().GetRenderer(), "assets/goomba.png");
 	m_objectTexture = IMG_LoadTexture(Game::GetInstance().GetRenderer(), "assets/portal.png");
+	m_pMusic = Mix_LoadMUS("assets/Caketown1.mp3");
+
+	Mix_PlayMusic(m_pMusic, -1);
+
 
 	//m_pMusic = Mix_LoadMUS("assets/MainMenu.mp3");
 	//Mix_PlayMusic(m_pMusic, -1);
@@ -103,17 +106,7 @@ void GameState::Update(float deltaTime)
 		 {
 			 AnimatedSprite* itObject = *it;
 
-			
-			 
-				 if (SDL_HasIntersectionF(&m_player->GetTransform(), &killBox->GetTransform()))
-				 {
-					 it = m_gameObjects.erase(it);
-					 delete itObject;
-					 itObject = nullptr;
-					 it++;
-					 StateManager::ChangeState(new LoseState);
-					 break;
-				 }
+		
 				 if (SDL_HasIntersectionF(&m_player->GetTransform(), &itObject->GetDestinationTransform()))
 				 {
 					 it = m_gameObjects.erase(it);
@@ -187,7 +180,9 @@ void GameState::Exit()
 
 	SDL_DestroyTexture(m_objectTexture);
 	SDL_DestroyTexture(m_playerTexture);
-
+	
+	Mix_FreeMusic(m_pMusic);
+	m_pMusic = nullptr;
 	//Mix_FreeMusic(m_pMusic);
 	//m_pMusic = nullptr;
 }
@@ -195,6 +190,7 @@ void GameState::Exit()
 void GameState::Resume()
 {
 	std::cout << "Resuming GameState..." << std::endl;
+
 }
 
 //End of GameScreen

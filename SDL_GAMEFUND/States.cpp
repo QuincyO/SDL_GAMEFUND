@@ -5,12 +5,17 @@
 #include "MathManager.h"
 #include "AnimatedSprite.h"
 #include "TiledLevel.h"
+#include "SpriteObject.h"
 
 //Begin Titlescreen
 
 void TitleState::Enter()
 {
 	std::cout << "Entering TitleState..." << std::endl;
+
+	m_spriteLogo = new SpriteObject({ 0,0,1024,1024 }, { (1024/2),0,1024*.5,768*.5 });
+	TextureManager::Load("assets/real/Logo.png", "logo");
+
 	timer = 0.0f;
 
 }
@@ -27,7 +32,7 @@ void TitleState::Update(float deltaTime)
 		StateManager::ChangeState(new MenuState());
 	}
 
-	timer += deltaTime;
+	//timer += deltaTime;
 	
 }
 
@@ -37,11 +42,22 @@ void TitleState::Render()
 	SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 255, 255, 0, 255);
 	SDL_RenderClear(Game::GetInstance().GetRenderer());
 
+
+	int result = SDL_RenderCopy(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("logo"), m_spriteLogo->GetSourceTransform(), m_spriteLogo->GetDestinationTransform());
+	if (result == 0)
+	{
+		std::cout << "Rendering Good " << std::endl;
+	}
+	else std::cout << "Rendering Error" << std::endl;
 }
 
 void TitleState::Exit()
 {
 	std::cout << "Exiting Title Screen" << std::endl;
+
+	delete m_spriteLogo;
+	m_spriteLogo = nullptr;
+
 }
 //End of TitleScreen
 

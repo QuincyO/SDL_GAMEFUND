@@ -12,7 +12,7 @@ public:
 
     TileObject* Clone()
     {
-        return new TileObject(m_sourceTransform, m_destinationTransform, m_obstacle, m_hazard);
+        return new TileObject(m_sourceTransform, m_destinationFTransform, m_obstacle, m_hazard);
     }
 
     bool IsObstacle() { return m_obstacle; }

@@ -4,6 +4,8 @@
 
 #include "SDL_image.h"
 #include "SDL_mixer.h"
+
+class SpriteObject;
 class GameObject;
 class AnimatedSprite;
 class TiledLevel;
@@ -31,6 +33,8 @@ public:
 	virtual void Exit() override;
 
 	float timer;
+private:
+	SpriteObject* m_spriteLogo;
 };
 
 

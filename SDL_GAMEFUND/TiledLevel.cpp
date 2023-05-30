@@ -90,8 +90,8 @@ void TiledLevel::Render()
 	{
 		for (int col = 0; col < m_cols; ++col)
 		{
-			SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture(m_tileKey),
-				m_levelTiles[row][col]->GetSourceTransform(),m_levelTiles[row][col]->GetDestinationTransform());
+			//SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture(m_tileKey),
+			//	m_levelTiles[row][col]->GetSourceTransform(),m_levelTiles[row][col]->GetDestinationTransform());
 			
 		}
 	}

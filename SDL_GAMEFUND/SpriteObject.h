@@ -10,6 +10,10 @@ public:
     {}
 
     SDL_Rect* GetSourceTransform() { return &m_sourceTransform; }
+
+    void Update(float deltaTIme) override {}
+    void Render() override {}
+
 protected:
     SDL_Rect m_sourceTransform;
 };

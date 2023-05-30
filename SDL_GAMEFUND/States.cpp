@@ -51,18 +51,15 @@ void GameState::Enter()
 {
 
 
-	TextureManager::Load("assets/goomba.png", "player");
-	TextureManager::Load("assets/portal.png", "portal");
+	TextureManager::Load("assets/Images/Tiles.png", "tiles");
+	//	TextureManager::Load("assets/goomba.png", "player");
+	//	TextureManager::Load("assets/portal.png", "portal");
 
 	m_pMusic = Mix_LoadMUS("assets/Caketown1.mp3");
 
-	Mix_PlayMusic(m_pMusic, -1);
-
-	TextureManager::Load("assets/Images/Tiles.png", "tiles");
-	m_pLevel = new TiledLevel(5, 8, 32, 32, "assets/Data/Tiledata.txt", "assets/Data/Level1.txt", "tiles");
-
-	//m_pMusic = Mix_LoadMUS("assets/MainMenu.mp3");
 	//Mix_PlayMusic(m_pMusic, -1);
+
+	m_pLevel = new TiledLevel(24, 32, 32, 32, "assets/Data/Tiledata.txt", "assets/Data/Level1.txt", "tiles");
 
 
 }
@@ -70,14 +67,21 @@ void GameState::Enter()
 void GameState::Update(float deltaTime)
 {
 	Game& GameInstance = Game::GetInstance();
-
-
-
-
-
-
-
 	m_pLevel->Update(deltaTime);
+
+
+	if (Game::GetInstance().KeyDown(SDL_SCANCODE_P))
+	{
+		StateManager::PushState(new PauseState());
+	}
+
+	if (Game::GetInstance().KeyDown(SDL_SCANCODE_0))
+	{
+		StateManager::ChangeState(new WinState);
+	}
+
+
+
 		
 	
 }
@@ -99,6 +103,7 @@ void GameState::Render()
 void GameState::Exit()
 {
 	std::cout<<"Exiting GameState.." << std::endl;
+
 	delete m_pLevel;
 	m_pLevel = nullptr;
 

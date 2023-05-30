@@ -1,8 +1,8 @@
 #pragma once
-#include <fstream>
-#include "TileObject.h"
-#include "Game.h"
-#include "TextureManager.h"
+#include <vector>
+#include <map>
+#include "GameObject.h"
+class TileObject;
 
 class TiledLevel :
     public GameObject

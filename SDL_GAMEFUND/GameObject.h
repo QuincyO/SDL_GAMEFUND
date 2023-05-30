@@ -11,6 +11,7 @@ public:
 	GameObject(const SDL_FRect destination)
 		:m_destinationTransform(destination)
 	{}
+	virtual ~GameObject() = default;
 
 	virtual void Update(float deltaTime) = 0;
 	virtual void Render() = 0;

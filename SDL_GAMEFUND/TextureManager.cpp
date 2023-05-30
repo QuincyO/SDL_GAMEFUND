@@ -5,7 +5,7 @@
 
 std::map<std::string, SDL_Texture*> TextureManager::s_textures;
 
-void TextureManager::Load(const char* path, const std::string key)
+SDL_Texture* TextureManager::Load(const char* path, const std::string key)
 {
 	SDL_Texture* temp = IMG_LoadTexture(Game::GetInstance().GetRenderer(), path);
 	if (temp == NULL)
@@ -15,10 +15,10 @@ void TextureManager::Load(const char* path, const std::string key)
 	}
 	else
 	{
-		s_textures.emplace(key, temp);
+		s_textures.emplace(key, temp); //Added TO the Map
 		std::cout << "Successfully Loaded Texture: " << key << std::endl;
 	}
-
+	return temp;
 }
 
 void TextureManager::Unload(const std::string key)

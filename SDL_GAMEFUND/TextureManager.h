@@ -6,7 +6,7 @@
 class TextureManager
 {
 public:
-	static void Load(const char* path, const std::string key);
+	static SDL_Texture* Load(const char* path, const std::string key);
 	static void Unload(const std::string key);
 	static SDL_Texture* GetTexture(const std::string key);
 	static void Quit();

@@ -1,11 +1,12 @@
 #pragma once
+#include <SDL.h>
 #include <vector>
 
 #include "SDL_image.h"
 #include "SDL_mixer.h"
 class GameObject;
-class TiledLevel;
 class AnimatedSprite;
+class TiledLevel;
 
 class State
 {
@@ -36,11 +37,11 @@ public:
 class GameState : public State
 {
 private:
-	float kPlayerSpeed = 500;
+	static const int kPlayerSpeed = 500;
+	TiledLevel* m_pLevel;
 
 	Mix_Music* m_pMusic;
 
-	TiledLevel* m_pLevel;
 
 
 public:

@@ -1,4 +1,8 @@
 #include "TiledLevel.h"
+#include <fstream>
+#include "TextureManager.h"
+#include "Game.h"
+#include "TileObject.h"
 
 
 TiledLevel::TiledLevel(int rows, int cols, int tileWidth, int tileHeight,

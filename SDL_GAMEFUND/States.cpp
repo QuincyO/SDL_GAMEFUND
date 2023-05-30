@@ -103,16 +103,14 @@ void GameState::Render()
 void GameState::Exit()
 {
 	std::cout<<"Exiting GameState.." << std::endl;
+	TextureManager::Unload("tiles");
 
 	delete m_pLevel;
 	m_pLevel = nullptr;
 
-	TextureManager::Unload("tiles");
 
 	Mix_FreeMusic(m_pMusic);
 	m_pMusic = nullptr;
-	//Mix_FreeMusic(m_pMusic);
-	//m_pMusic = nullptr;
 }
 
 void GameState::Resume()

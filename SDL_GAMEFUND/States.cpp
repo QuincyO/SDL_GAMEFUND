@@ -8,10 +8,17 @@
 #include "SpriteObject.h"
 #include "CollisionManager.h"
 
+
+
+	 Mix_Music* m_pMusic = Mix_LoadMUS("assets/Caketown1.mp3");
+	 Mix_Music* m_pMusicGame = Mix_LoadMUS("assets/MainMenu.mp3");
+
 //Begin Titlescreen
 
 void TitleState::Enter()
 {
+	Mix_Music* m_pMusic = Mix_LoadMUS("assets/Caketown1.mp3");
+	Mix_Music* m_pMusicGame = Mix_LoadMUS("assets/MainMenu.mp3");
 	std::cout << "Entering TitleState..." << std::endl;
 	SDL_Rect Rect = {
 		0,0,
@@ -31,7 +38,11 @@ void TitleState::Enter()
 
 
 	TextureManager::Load("assets/real/Logo.png", "logo");
+	m_pMix =  Mix_LoadWAV("assets/real/gmae.wav");
 
+	//Mix_VolumeChunk(m_pMusic, 100);
+	std::cout << Mix_PlayChannel(1, m_pMix, 0) << std::endl;
+	
 	timer = 0.0f;
 
 }
@@ -59,12 +70,8 @@ void TitleState::Render()
 	SDL_RenderClear(Game::GetInstance().GetRenderer());
 
 
-	int result = SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("logo"), m_spriteLogo->GetSourceTransform(), m_spriteLogo->GetDestinationFTransform());
-	if (result == 0)
-	{
-		std::cout << "Rendering Good " << std::endl;
-	}
-	else std::cout << "Rendering Error" << std::endl;
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("logo"), m_spriteLogo->GetSourceTransform(), m_spriteLogo->GetDestinationFTransform());
+
 }
 
 void TitleState::Exit()
@@ -141,7 +148,7 @@ void GameState::Enter()
 
 	m_pMusic = Mix_LoadMUS("assets/Caketown1.mp3");
 
-	//Mix_PlayMusic(m_pMusic, -1);
+	Mix_PlayMusic(m_pMusic, -1);
 
 
 
@@ -383,6 +390,10 @@ void MenuState::Enter()
 	frect.w = rect.w * .75;
 	frect.h = rect.h * .75;
 	m_Name = new SpriteObject(rect, frect);
+
+
+	Mix_VolumeMusic(40);
+	Mix_PlayMusic(m_pMusic, -1);
 
 
 }

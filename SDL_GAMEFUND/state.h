@@ -22,6 +22,9 @@ public:
 	virtual void Render() = 0;
 	virtual void Exit() = 0;
 	virtual void Resume() {}
+protected:
+	 Mix_Music* m_pMusic;
+	 Mix_Music* m_pMusicGame;
 };
 
 class TitleState : public State
@@ -35,6 +38,7 @@ public:
 	float timer;
 private:
 	SpriteObject* m_spriteLogo;
+	Mix_Chunk* m_pMix;
 };
 
 
@@ -44,7 +48,6 @@ private:
 	static const int kPlayerSpeed = 500;
 	TiledLevel* m_pLevel;
 
-	Mix_Music* m_pMusic;
 	SpriteObject* m_background;
 	AnimatedSprite* m_player;
 	SpriteObject* m_object;
@@ -87,6 +90,7 @@ private:
 	SpriteObject* m_Name;
 	SpriteObject* startButton;
 	SpriteObject* creditButton;
+
 };
 
 class CreditState : public State

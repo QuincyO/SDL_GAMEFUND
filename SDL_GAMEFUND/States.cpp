@@ -6,6 +6,7 @@
 #include "AnimatedSprite.h"
 #include "TiledLevel.h"
 #include "SpriteObject.h"
+#include "CollisionManager.h"
 
 //Begin Titlescreen
 
@@ -42,7 +43,7 @@ void TitleState::Update(float deltaTime)
 		std::cout << "Changing to GameState" << std::endl;
 		StateManager::ChangeState(new MenuState());//Change to new GameState
 	}
-	if (timer > .1f)
+	if (timer > 3.1f)
 	{
 		StateManager::ChangeState(new MenuState());
 	}
@@ -112,8 +113,29 @@ void GameState::Enter()
 	frect.h = rect.h/2;
 	m_button = new SpriteObject(rect, frect);
 
+	SDL_QueryTexture(TextureManager::GetTexture("blueGuy"), NULL, NULL, &rect.w, &rect.h);
+	rect.x = 0;
+	rect.y = 0;
 
 
+	frect.x = 1280 * .25;
+	frect.y = 720 * .25;
+	frect.w = rect.w ;
+	frect.h = rect.h ;
+	m_object = new SpriteObject(rect, frect);
+
+	SDL_QueryTexture(TextureManager::GetTexture("player"), NULL, NULL, &rect.x, &rect.y);
+	rect.x = 0;
+	rect.y = 0;
+	rect.w=72;
+	rect.h;
+
+
+	frect.x = 1280 * .5;
+	frect.y = 720 * .5;
+	frect.w = rect.w ;
+	frect.h = rect.h ;
+	m_player = new AnimatedSprite(NULL, .1, 11, rect, frect);
 
 
 
@@ -130,8 +152,8 @@ void GameState::Enter()
 
 void GameState::Update(float deltaTime)
 {
-	Game& GameInstance = Game::GetInstance();
 	m_pLevel->Update(deltaTime);
+	m_player->Animate(deltaTime);
 
 
 	if (Game::GetInstance().KeyDown(SDL_SCANCODE_P))
@@ -139,11 +161,43 @@ void GameState::Update(float deltaTime)
 		StateManager::PushState(new PauseState());
 	}
 
+
+
+	if (Game::GetInstance().KeyDown(SDL_SCANCODE_W))
+	{
+		m_object->UpdateYPosition(-kPlayerSpeed * deltaTime);
+	}
+	if (Game::GetInstance().KeyDown(SDL_SCANCODE_S))
+	{
+		m_object->UpdateYPosition(kPlayerSpeed * deltaTime);
+	}
+
+	if (Game::GetInstance().KeyDown(SDL_SCANCODE_A))
+	{
+		m_object->UpdateXPosition(-kPlayerSpeed * deltaTime);
+	}
+
+	if (Game::GetInstance().KeyDown(SDL_SCANCODE_D))
+	{
+		m_object->UpdateXPosition(kPlayerSpeed * deltaTime);
+	}
+
+
+	if (CollisionManager::AABBCheck(*m_object->GetDestinationFTransform(), *m_player->GetDestinationFTransform()))
+	{
+		StateManager::ChangeState(new LoseState);
+	}
+
+
 	if (Game::GetInstance().KeyDown(SDL_SCANCODE_0))
 	{
 		StateManager::ChangeState(new WinState);
-	}
 
+	}
+	if (timer > 5)
+	{
+		StateManager::ChangeState(new WinState);
+	}
 
 	timer += deltaTime;
 		
@@ -162,15 +216,25 @@ void GameState::Render()
 
 	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("gameBackground"), m_background->GetSourceTransform(), m_background->GetDestinationFTransform());
 	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("wasd"), m_button->GetSourceTransform(), m_button->GetDestinationFTransform());
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("blueGuy"), m_object->GetSourceTransform(), m_object->GetDestinationFTransform());
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("player"), m_player->GetSourceTransform(), m_player->GetDestinationFTransform());
 
-	//SDL_Rect playerRect = MathManager::ConvertFRect2Rect(m_player->GetTransform());
-	//SDL_RenderCopy(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("player"), NULL, &playerRect);
 }
 
 void GameState::Exit()
 {
 	std::cout<<"Exiting GameState.." << std::endl;
 	TextureManager::Unload("tiles");
+
+	delete m_background;
+	delete m_button;
+	delete m_object;
+	delete m_player;
+
+	m_background = nullptr;
+	m_button = nullptr;
+	m_object = nullptr;
+	m_player = nullptr;
 
 	delete m_pLevel;
 	m_pLevel = nullptr;
@@ -191,6 +255,39 @@ void GameState::Resume()
 void PauseState::Enter()
 {
 	std::cout << "Entering Pause State..." << std::endl;
+	TextureManager::Load("assets/real/Pause.png", "pauseTitle");
+	TextureManager::Load("assets/real/Resume.png", "resumeButton");
+	SDL_Rect tRect;
+	SDL_FRect frect;
+
+	SDL_QueryTexture(TextureManager::GetTexture("pauseTitle"), NULL, NULL, &tRect.w, &tRect.h);
+	tRect.x = 0;
+	tRect.y = 0;
+	tRect.w;
+	tRect.h;
+
+
+	frect.x = rect.x + (rect.w/2) - (tRect.w/2);
+	frect.y = rect.y;
+	frect.w = tRect.w ;
+	frect.h = tRect.h;
+	m_pause = new SpriteObject(tRect, frect);
+
+	SDL_QueryTexture(TextureManager::GetTexture("resumeButton"), NULL, NULL, &tRect.w, &tRect.h);
+	tRect.x = 0;
+	tRect.y = 0;
+	tRect.w;
+	tRect.h;
+
+
+	frect.x = rect.x + (rect.w / 2) - (tRect.w / 4);
+	frect.y = rect.y + rect.h*.85;
+	frect.w = tRect.w/2;
+	frect.h = tRect.h/2;
+	m_button = new SpriteObject(tRect, frect);
+
+
+
 }
 
 void PauseState::Update(float deltaTime)
@@ -204,7 +301,6 @@ void PauseState::Update(float deltaTime)
 void PauseState::Render()
 {
 	//std::cout << "Rendering Pause State" << std::endl;
-	SDL_Rect rect = { 256,128,512,512 };
 	//First Render the Gamestate
 	StateManager::GetStates().front()->Render();
 
@@ -212,11 +308,20 @@ void PauseState::Render()
 	SDL_SetRenderDrawBlendMode(Game::GetInstance().GetRenderer(), SDL_BLENDMODE_BLEND);
 	SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 128, 128, 128, 128);
 	SDL_RenderFillRect(Game::GetInstance().GetRenderer(), &rect);
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("pauseTitle"), m_pause->GetSourceTransform(), m_pause->GetDestinationFTransform());
+
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("resumeButton"), m_button->GetSourceTransform(), m_button->GetDestinationFTransform());
+
+
 }
 
 void PauseState::Exit()
 {
 	std::cout << "Exiting Pause State..." << std::endl;
+	delete m_pause;
+	delete m_button;
+	m_pause = nullptr;
+	m_button = nullptr;
 
 }
 
@@ -242,6 +347,7 @@ void MenuState::Enter()
 	};
 
 	m_backGround = new SpriteObject(rect, frect);
+	
 	rect.x = 0;
 	rect.y = 0;
 	rect.w = 587;
@@ -300,6 +406,7 @@ void MenuState::Render()
 	SDL_RenderClear(Game::GetInstance().GetRenderer());
 
 	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("background"),m_backGround->GetSourceTransform(), m_backGround->GetDestinationFTransform());
+	
 	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("credit"),creditButton->GetSourceTransform(), creditButton->GetDestinationFTransform());
 	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("game"),startButton->GetSourceTransform(), startButton->GetDestinationFTransform());
 	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("name"), m_Name->GetSourceTransform(), m_Name->GetDestinationFTransform());
@@ -429,6 +536,52 @@ void CreditState::Resume()
 void WinState::Enter()
 {
 	std::cout << "Enteriing Win State" << std::endl;
+	SDL_Rect rect;
+	SDL_FRect frect;
+	TextureManager::Load("assets/real/Win.png", "winTitle");
+	TextureManager::Load("assets/real/SpaceMenu.png", "restartButton");
+
+
+	SDL_QueryTexture(TextureManager::Load("assets/real/background.png","background"), NULL, NULL, &rect.w,&rect.h);
+	rect.x = 0;
+	rect.y = 0;
+	rect.w = 1280;
+	rect.h = 720 ;
+
+	frect.x = 0;
+	frect.y = 0;
+	frect.w = 1280;
+	frect.h = 720;
+
+	m_background = new SpriteObject(rect, frect);
+
+
+	SDL_QueryTexture(TextureManager::GetTexture("winTitle"), NULL, NULL, &rect.w, &rect.h);
+	rect.x = 0;
+	rect.y = 0;
+	rect.w;
+	rect.h;
+
+	frect.x = 1280*.5 - (rect.w/2);
+	frect.y = 720*.15;
+	frect.w = rect.w;
+	frect.h = rect.h;
+
+	m_title = new SpriteObject(rect, frect);
+
+	SDL_QueryTexture(TextureManager::GetTexture("restartButton"), NULL, NULL, &rect.w, &rect.h);
+	rect.x = 0;
+	rect.y = 0;
+	rect.w;
+	rect.h;
+
+	frect.x = 1280 *.5 - (rect.w/2);
+	frect.y = 720*.85;
+	frect.w = rect.w;
+	frect.h = rect.h;
+
+	m_button = new SpriteObject(rect, frect);
+	
 }
 
 void WinState::Update(float deltaTime)
@@ -444,11 +597,24 @@ void WinState::Render()
 {
 	SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 0, 255, 0, 255);
 	SDL_RenderClear(Game::GetInstance().GetRenderer());
+	
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("background"), m_background->GetSourceTransform(), m_background->GetDestinationFTransform());
+
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("winTitle"), m_title->GetSourceTransform(), m_title->GetDestinationFTransform());
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("restartButton"), m_button->GetSourceTransform(), m_button->GetDestinationFTransform());
 }
 
 void WinState::Exit()
 {
 	std::cout << "Exiting Win State" << std::endl;
+
+	delete m_background;
+	delete m_button;
+	delete m_title;
+
+	m_background = nullptr;
+	m_button = nullptr;
+	m_title = nullptr;
 }
 
 void WinState::Resume()
@@ -459,6 +625,51 @@ void WinState::Resume()
 void LoseState::Enter()
 {
 	std::cout << "Entering Lose State" << std::endl;
+	SDL_Rect rect;
+	SDL_FRect frect;
+	TextureManager::Load("assets/real/Lost.png", "lossTitle");
+	TextureManager::Load("assets/real/SpaceMenu.png", "restartButton");
+
+
+	SDL_QueryTexture(TextureManager::Load("assets/real/background.png", "background"), NULL, NULL, &rect.w, &rect.h);
+	rect.x = 0;
+	rect.y = 0;
+	rect.w = 1280;
+	rect.h = 720;
+
+	frect.x = 0;
+	frect.y = 0;
+	frect.w = 1280;
+	frect.h = 720;
+
+	m_background = new SpriteObject(rect, frect);
+
+
+	SDL_QueryTexture(TextureManager::GetTexture("lossTitle"), NULL, NULL, &rect.w, &rect.h);
+	rect.x = 0;
+	rect.y = 0;
+	rect.w;
+	rect.h;
+
+	frect.x = 1280 * .5 - (rect.w / 2);
+	frect.y = 720 * .15;
+	frect.w = rect.w;
+	frect.h = rect.h;
+
+	m_title = new SpriteObject(rect, frect);
+
+	SDL_QueryTexture(TextureManager::GetTexture("restartButton"), NULL, NULL, &rect.w, &rect.h);
+	rect.x = 0;
+	rect.y = 0;
+	rect.w;
+	rect.h;
+
+	frect.x = 1280 * .5 - (rect.w / 2);
+	frect.y = 720 * .85;
+	frect.w = rect.w;
+	frect.h = rect.h;
+
+	m_button = new SpriteObject(rect, frect);
 
 }
 
@@ -474,11 +685,24 @@ void LoseState::Render()
 {
 	SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 255, 0, 0, 255);
 	SDL_RenderClear(Game::GetInstance().GetRenderer());
+
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("background"), m_background->GetSourceTransform(), m_background->GetDestinationFTransform());
+
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("lossTitle"), m_title->GetSourceTransform(), m_title->GetDestinationFTransform());
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("restartButton"), m_button->GetSourceTransform(), m_button->GetDestinationFTransform());
 }
 
 void LoseState::Exit()
 {
 	std::cout << "Exiting LoseState" << std::endl;
+	delete m_background;
+	delete m_button;
+	delete m_title;
+
+	m_background = nullptr;
+	m_button = nullptr;
+	m_title = nullptr;
+
 }
 
 void LoseState::Resume()

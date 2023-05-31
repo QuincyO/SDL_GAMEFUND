@@ -5,7 +5,8 @@ class GameObject
 {
 public:
 	GameObject()
-		:m_destinationTransform({ 0,0,0,0 })
+		:m_destinationTransform({ 0,0,0,0 }),
+		m_destinationFTransform{ 0,0,0,0 }
 	{}
 
 	GameObject(const SDL_FRect destination)
@@ -25,6 +26,16 @@ public:
 	SDL_FRect* GetDestinationFTransform() { return &m_destinationFTransform; }
 
 	SDL_Rect* GetDestinationTransform() { return &m_destinationTransform; }
+
+	void UpdateYPosition(float y)
+	{
+		m_destinationFTransform.y += y;
+	}
+
+	void UpdateXPosition(float x)
+	{
+		m_destinationFTransform.x += x;
+	}
 
 
 protected:

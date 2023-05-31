@@ -45,8 +45,12 @@ private:
 	TiledLevel* m_pLevel;
 
 	Mix_Music* m_pMusic;
+	SpriteObject* m_background;
+	SpriteObject* m_player;
+	SpriteObject* m_object;
+	SpriteObject* m_button;
 
-
+	float timer;
 
 public:
 	virtual void Enter() override;
@@ -89,6 +93,11 @@ public:
 	virtual void Render() override;
 	virtual void Exit() override;
 	virtual void Resume() override;
+private:
+	SpriteObject* m_title;
+	SpriteObject* m_name;
+	SpriteObject* m_button;
+	SpriteObject* m_background;
 };
 
 class WinState : public State

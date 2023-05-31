@@ -42,7 +42,7 @@ void TitleState::Update(float deltaTime)
 		std::cout << "Changing to GameState" << std::endl;
 		StateManager::ChangeState(new MenuState());//Change to new GameState
 	}
-	if (timer > 4.0f)
+	if (timer > .1f)
 	{
 		StateManager::ChangeState(new MenuState());
 	}
@@ -83,12 +83,45 @@ void GameState::Enter()
 
 
 	TextureManager::Load("assets/Images/Tiles.png", "tiles");
-	//	TextureManager::Load("assets/goomba.png", "player");
-	//	TextureManager::Load("assets/portal.png", "portal");
+	TextureManager::Load("assets/real/background2.png", "gameBackground");
+	TextureManager::Load("assets/real/wasd.png", "wasd");
+	TextureManager::Load("assets/platformer/PNG/Player/p1_walk/spritesheet.png", "player");
+	TextureManager::Load("assets/platformer/PNG/Player/p2_stand.png", "blueGuy");
+	SDL_Rect rect;
+	SDL_FRect frect;
+
+	SDL_QueryTexture(TextureManager::GetTexture("gameBackground"), NULL, NULL, &rect.w, &rect.h);
+	rect.x = 0;
+	rect.y = 0;
+
+
+	frect.x = 0;
+	frect.y = 0;
+	frect.w = rect.w;
+	frect.h = rect.h;
+	m_background = new SpriteObject(rect, frect);
+
+	SDL_QueryTexture(TextureManager::GetTexture("wasd"), NULL, NULL, &rect.w, &rect.h);
+	rect.x = 0;
+	rect.y = 0;
+
+
+	frect.x = 1280 * .8;
+	frect.y = 720 * .05;
+	frect.w = rect.w/2;
+	frect.h = rect.h/2;
+	m_button = new SpriteObject(rect, frect);
+
+
+
+
+
 
 	m_pMusic = Mix_LoadMUS("assets/Caketown1.mp3");
 
 	//Mix_PlayMusic(m_pMusic, -1);
+
+
 
 	m_pLevel = new TiledLevel(24, 32, 32, 32, "assets/Data/Tiledata.txt", "assets/Data/Level1.txt", "tiles");
 
@@ -112,7 +145,7 @@ void GameState::Update(float deltaTime)
 	}
 
 
-
+	timer += deltaTime;
 		
 	
 }
@@ -126,6 +159,9 @@ void GameState::Render()
 
 
 	m_pLevel->Render();
+
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("gameBackground"), m_background->GetSourceTransform(), m_background->GetDestinationFTransform());
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("wasd"), m_button->GetSourceTransform(), m_button->GetDestinationFTransform());
 
 	//SDL_Rect playerRect = MathManager::ConvertFRect2Rect(m_player->GetTransform());
 	//SDL_RenderCopy(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("player"), NULL, &playerRect);
@@ -293,6 +329,61 @@ void MenuState::Resume()
 void CreditState::Enter()
 {
 	std::cout << "Entering Credit State" << std::endl;
+	SDL_Rect rect;
+	SDL_FRect frect;
+	TextureManager::Load("assets/real/Credit.png", "creditTitle");
+	TextureManager::Load("assets/real/menu.png", "menuButton");
+	TextureManager::Load("assets/real/Quincy.png", "quincy");
+	
+	rect.x = 0;
+	rect.y = 0;
+	rect.w = 1280;
+	rect.h = 720;
+
+
+	frect.x = 0;
+	frect.y = 0;
+	frect.w = 1280;
+	frect.h = 720;
+
+	m_background = new SpriteObject(rect, frect);
+
+	rect.x = 0;
+	rect.y = 0;
+	rect.w = 256;
+	rect.h = 79;
+
+
+	frect.x = 1280*.5 - (rect.w/2);
+	frect.y = 720*.10 - (rect.h/2);
+	frect.w = rect.w;
+	frect.h = rect.h;
+	m_title = new SpriteObject(rect, frect);
+
+	rect.x = 0;
+	rect.y = 0;
+	rect.w = 256;
+	rect.h = 79;
+
+
+	frect.x = 1280 * .5 - (rect.w / 2);
+	frect.y = 720 * .20 - (rect.h / 2);
+	frect.w = rect.w;
+	frect.h = rect.h;
+	m_name = new SpriteObject(rect, frect);
+
+	rect.x = 0;
+	rect.y = 0;
+	rect.w = 719;
+	rect.h = 96;
+
+
+	frect.x = 1280 * .5 - (rect.w / 2);
+	frect.y = 720 * .88 - (rect.h / 2);
+	frect.w = rect.w;
+	frect.h = rect.h;
+	m_button = new SpriteObject(rect, frect);
+
 }
 
 void CreditState::Update(float deltaTime)
@@ -307,11 +398,27 @@ void CreditState::Render()
 {
 	SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 255, 192, 203, 255);
 	SDL_RenderClear(Game::GetInstance().GetRenderer());
+
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("background"), m_background->GetSourceTransform(), m_background->GetDestinationFTransform());
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("creditTitle"), m_title->GetSourceTransform(), m_title->GetDestinationFTransform());
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("quincy"), m_name->GetSourceTransform(), m_name->GetDestinationFTransform());
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("menuButton"), m_button->GetSourceTransform(), m_button->GetDestinationFTransform());
+
+
 }
 
 void CreditState::Exit()
 {
 	std::cout << "Exiting Credit State" << std::endl;
+	delete m_background;
+	delete m_button;
+	delete m_name;
+	delete m_title;
+
+	m_background = nullptr;
+	m_button = nullptr;
+	m_name = nullptr;
+	m_title = nullptr;
 }
 
 void CreditState::Resume()

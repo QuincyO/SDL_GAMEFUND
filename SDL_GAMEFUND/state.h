@@ -23,8 +23,6 @@ public:
 	virtual void Exit() = 0;
 	virtual void Resume() {}
 protected:
-	 Mix_Music* m_pMusic;
-	 Mix_Music* m_pMusicGame;
 };
 
 class TitleState : public State
@@ -39,6 +37,7 @@ public:
 private:
 	SpriteObject* m_spriteLogo;
 	Mix_Chunk* m_pMix;
+	Mix_Music* m_pMUS;
 };
 
 
@@ -52,10 +51,10 @@ private:
 	AnimatedSprite* m_player;
 	SpriteObject* m_object;
 	SpriteObject* m_button;
-
 	float timer;
 
 public:
+	Mix_Music* gameMusic;
 	virtual void Enter() override;
 	virtual void Update(float deltaTime) override;
 	virtual void Render() override;
@@ -85,11 +84,14 @@ public:
 	virtual void Render() override;
 	virtual void Exit() override;
 	virtual void Resume() override;
+
+
 private:
 	SpriteObject* m_backGround;
 	SpriteObject* m_Name;
 	SpriteObject* startButton;
 	SpriteObject* creditButton;
+
 
 };
 
@@ -117,6 +119,7 @@ public:
 	virtual void Exit() override;
 	virtual void Resume() override;
 
+	Mix_Music* m_pMUS;
 private:
 	SpriteObject* m_background;
 	SpriteObject* m_button;
@@ -131,6 +134,7 @@ public:
 	virtual void Render() override;
 	virtual void Exit() override;
 	virtual void Resume() override;
+	Mix_Music* m_pMUS;
 private:
 	SpriteObject* m_background;
 	SpriteObject* m_button;

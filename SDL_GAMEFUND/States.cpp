@@ -10,85 +10,82 @@
 
 
 
-	 Mix_Music* m_pMusic = Mix_LoadMUS("assets/Caketown1.mp3");
-	 Mix_Music* m_pMusicGame = Mix_LoadMUS("assets/MainMenu.mp3");
-
 //Begin Titlescreen
 
-void TitleState::Enter()
-{
-	Mix_Music* m_pMusic = Mix_LoadMUS("assets/Caketown1.mp3");
-	Mix_Music* m_pMusicGame = Mix_LoadMUS("assets/MainMenu.mp3");
-	std::cout << "Entering TitleState..." << std::endl;
-	SDL_Rect Rect = {
-		0,0,
-		1024,
-		1024
-	};
-
-
-	SDL_FRect fRect = {
-
-		(1280 / 2) - (Rect.w*.75 / 2), //Position X-Axis
-		(720 / 2) - (Rect.h*.7 / 2), //Position Y-Axis
-		Rect.w * .75, //Width Size
-		Rect.h * .7 //Height Size
-	};
-	m_spriteLogo = new SpriteObject(Rect, fRect);
-
-
-	TextureManager::Load("assets/real/Logo.png", "logo");
-	m_pMix =  Mix_LoadWAV("assets/real/gmae.wav");
-
-	//Mix_VolumeChunk(m_pMusic, 100);
-	std::cout << Mix_PlayChannel(1, m_pMix, 0) << std::endl;
-	
-	timer = 0.0f;
-
-}
-
-void TitleState::Update(float deltaTime)
-{
-	if (Game::GetInstance().KeyDown(SDL_SCANCODE_T))
+	void TitleState::Enter()
 	{
-		std::cout << "Changing to GameState" << std::endl;
-		StateManager::ChangeState(new MenuState());//Change to new GameState
-	}
-	if (timer > 3.1f)
-	{
-		StateManager::ChangeState(new MenuState());
+		std::cout << "Entering TitleState..." << std::endl;
+		SDL_Rect Rect = {
+			0,0,
+			1024,
+			1024
+		};
+
+
+		SDL_FRect fRect = {
+
+			(1280 / 2) - (Rect.w * .75 / 2), //Position X-Axis
+			(720 / 2) - (Rect.h * .7 / 2), //Position Y-Axis
+			Rect.w * .75, //Width Size
+			Rect.h * .7 //Height Size
+		};
+		m_spriteLogo = new SpriteObject(Rect, fRect);
+
+
+		TextureManager::Load("assets/real/Logo.png", "logo");
+		m_pMix = Mix_LoadWAV("assets/real/gmae.wav");
+
+		//Mix_VolumeChunk(m_pMusic, 100);
+		std::cout << Mix_PlayChannel(1, m_pMix, 0) << std::endl;
+
+		timer = 0.0f;
+
 	}
 
-	timer += deltaTime;
-	
-}
+	void TitleState::Update(float deltaTime)
+	{
+		if (Game::GetInstance().KeyDown(SDL_SCANCODE_T))
+		{
+			std::cout << "Changing to GameState" << std::endl;
+			StateManager::ChangeState(new MenuState());//Change to new GameState
+		}
+		if (timer > 3.1f)
+		{
+			StateManager::ChangeState(new MenuState());
+		}
 
-void TitleState::Render()
-{
-	//std::cout << "Rendering Title Screen" << std::endl;
-	SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 0, 0, 0, 255);
-	SDL_RenderClear(Game::GetInstance().GetRenderer());
+		timer += deltaTime;
+
+	}
+
+	void TitleState::Render()
+	{
+		//std::cout << "Rendering Title Screen" << std::endl;
+		SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 0, 0, 0, 255);
+		SDL_RenderClear(Game::GetInstance().GetRenderer());
 
 
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("logo"), m_spriteLogo->GetSourceTransform(), m_spriteLogo->GetDestinationFTransform());
+		SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("logo"), m_spriteLogo->GetSourceTransform(), m_spriteLogo->GetDestinationFTransform());
 
-}
+	}
 
-void TitleState::Exit()
-{
-	std::cout << "Exiting Title Screen" << std::endl;
-	TextureManager::Unload("logo");
-	delete m_spriteLogo;
-	m_spriteLogo = nullptr;
+	void TitleState::Exit()
+	{
+		std::cout << "Exiting Title Screen" << std::endl;
+		TextureManager::Unload("logo");
+		delete m_spriteLogo;
+		m_spriteLogo = nullptr;
 
-}
-//End of TitleScreen
+		m_pMUS = Mix_LoadMUS("assets/Caketown1.mp3");
+		Mix_VolumeMusic(40);
+		Mix_PlayMusic(m_pMUS,-1);
+	}
+	//End of TitleScreen
 
 //Start of GameScreen
 
 void GameState::Enter()
 {
-
 
 	TextureManager::Load("assets/Images/Tiles.png", "tiles");
 	TextureManager::Load("assets/real/background2.png", "gameBackground");
@@ -145,10 +142,9 @@ void GameState::Enter()
 	m_player = new AnimatedSprite(NULL, .1, 11, rect, frect);
 
 
+	gameMusic = Mix_LoadMUS("assets/MainMenu.mp3");
 
-	m_pMusic = Mix_LoadMUS("assets/Caketown1.mp3");
-
-	Mix_PlayMusic(m_pMusic, -1);
+	Mix_PlayMusic(gameMusic, -1);
 
 
 
@@ -247,13 +243,15 @@ void GameState::Exit()
 	m_pLevel = nullptr;
 
 
-	Mix_FreeMusic(m_pMusic);
-	m_pMusic = nullptr;
+	Mix_FreeMusic(gameMusic);
+	gameMusic = nullptr;
 }
 
 void GameState::Resume()
 {
 	std::cout << "Resuming GameState..." << std::endl;
+
+	Mix_ResumeMusic();
 
 }
 
@@ -293,7 +291,7 @@ void PauseState::Enter()
 	frect.h = tRect.h/2;
 	m_button = new SpriteObject(tRect, frect);
 
-
+	Mix_PauseMusic();
 
 }
 
@@ -341,6 +339,8 @@ void MenuState::Enter()
 	TextureManager::Load("assets/real/Credits.png", "credit");
 	TextureManager::Load("assets/real/Game.png", "game");
 	TextureManager::Load("assets/real/Name.png", "name");
+
+
 
 	SDL_Rect rect =
 	{
@@ -392,8 +392,6 @@ void MenuState::Enter()
 	m_Name = new SpriteObject(rect, frect);
 
 
-	Mix_VolumeMusic(40);
-	Mix_PlayMusic(m_pMusic, -1);
 
 
 }
@@ -626,6 +624,9 @@ void WinState::Exit()
 	m_background = nullptr;
 	m_button = nullptr;
 	m_title = nullptr;
+	m_pMUS = Mix_LoadMUS("assets/Caketown1.mp3");
+	Mix_VolumeMusic(40);
+	Mix_PlayMusic(m_pMUS, -1);
 }
 
 void WinState::Resume()
@@ -713,6 +714,10 @@ void LoseState::Exit()
 	m_background = nullptr;
 	m_button = nullptr;
 	m_title = nullptr;
+
+	m_pMUS = Mix_LoadMUS("assets/Caketown1.mp3");
+	Mix_VolumeMusic(40);
+	Mix_PlayMusic(m_pMUS, -1);
 
 }
 

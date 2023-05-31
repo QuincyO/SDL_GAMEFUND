@@ -74,6 +74,11 @@ public:
 	virtual void Render() override;
 	virtual void Exit() override;
 	virtual void Resume() override;
+private:
+	SpriteObject* m_backGround;
+	SpriteObject* m_Name;
+	SpriteObject* startButton;
+	SpriteObject* creditButton;
 };
 
 class CreditState : public State

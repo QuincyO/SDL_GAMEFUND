@@ -5,8 +5,8 @@ Game::Game()
 	:p_Renderer {nullptr}
 	,p_Window{nullptr}
 	,m_running{false}
-	,SCREEN_HEIGHT{ kWidth }
-	,SCREEN_WIDTH{kHeight}
+	,SCREEN_HEIGHT{ kHeight }
+	,SCREEN_WIDTH{ kWidth }
 	,m_keyStates{ nullptr }
 {
 

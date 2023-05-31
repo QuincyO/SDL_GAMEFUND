@@ -12,8 +12,23 @@
 void TitleState::Enter()
 {
 	std::cout << "Entering TitleState..." << std::endl;
+	SDL_Rect Rect = {
+		0,0,
+		1024,
+		1024
+	};
 
-	m_spriteLogo = new SpriteObject({ 0,0,1024,1024 }, { (1024/2),0,1024*.5,768*.5 });
+
+	SDL_FRect fRect = {
+
+		(1280 / 2) - (Rect.w*.75 / 2), //Position X-Axis
+		(720 / 2) - (Rect.h*.7 / 2), //Position Y-Axis
+		Rect.w * .75, //Width Size
+		Rect.h * .7 //Height Size
+	};
+	m_spriteLogo = new SpriteObject(Rect, fRect);
+
+
 	TextureManager::Load("assets/real/Logo.png", "logo");
 
 	timer = 0.0f;
@@ -25,25 +40,25 @@ void TitleState::Update(float deltaTime)
 	if (Game::GetInstance().KeyDown(SDL_SCANCODE_T))
 	{
 		std::cout << "Changing to GameState" << std::endl;
-		StateManager::ChangeState(new GameState());//Change to new GameState
+		StateManager::ChangeState(new MenuState());//Change to new GameState
 	}
 	if (timer > 4.0f)
 	{
 		StateManager::ChangeState(new MenuState());
 	}
 
-	//timer += deltaTime;
+	timer += deltaTime;
 	
 }
 
 void TitleState::Render()
 {
 	//std::cout << "Rendering Title Screen" << std::endl;
-	SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 255, 255, 0, 255);
+	SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 0, 0, 0, 255);
 	SDL_RenderClear(Game::GetInstance().GetRenderer());
 
 
-	int result = SDL_RenderCopy(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("logo"), m_spriteLogo->GetSourceTransform(), m_spriteLogo->GetDestinationTransform());
+	int result = SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("logo"), m_spriteLogo->GetSourceTransform(), m_spriteLogo->GetDestinationFTransform());
 	if (result == 0)
 	{
 		std::cout << "Rendering Good " << std::endl;
@@ -54,7 +69,7 @@ void TitleState::Render()
 void TitleState::Exit()
 {
 	std::cout << "Exiting Title Screen" << std::endl;
-
+	TextureManager::Unload("logo");
 	delete m_spriteLogo;
 	m_spriteLogo = nullptr;
 
@@ -136,7 +151,6 @@ void GameState::Resume()
 }
 
 //End of GameScreen
-
 //Start of Pause Screen
 void PauseState::Enter()
 {
@@ -175,6 +189,59 @@ void PauseState::Exit()
 void MenuState::Enter()
 {
 	std::cout << "Rendering Menu Screen" << std::endl;
+	TextureManager::Load("assets/real/Background.png", "background");
+	TextureManager::Load("assets/real/Credits.png", "credit");
+	TextureManager::Load("assets/real/Game.png", "game");
+	TextureManager::Load("assets/real/Name.png", "name");
+
+	SDL_Rect rect =
+	{
+		0,0,
+		1280,
+		720
+	};
+	SDL_FRect frect =
+	{
+		0,0,1280,720
+	};
+
+	m_backGround = new SpriteObject(rect, frect);
+	rect.x = 0;
+	rect.y = 0;
+	rect.w = 587;
+	rect.h = 79;
+	
+
+	frect.x = 1280*.25 - rect.w/2;
+	frect.y =720*.85 - rect.h/2;
+	frect.w = rect.w*.75;
+	frect.h = rect.h*.75;
+	creditButton = new SpriteObject(rect, frect);
+
+	rect.x = 0;
+	rect.y = 0;
+	rect.w = 552;
+	rect.h = 80;
+
+
+	frect.x = 1280 * .85 - rect.w / 2;
+	frect.y = 720 * .85 - rect.h / 2;
+	frect.w = rect.w * .75;
+	frect.h = rect.h * .75;
+	startButton = new SpriteObject(rect, frect);
+
+	rect.x = 0;
+	rect.y = 0;
+	rect.w = 792;
+	rect.h = 96;
+
+
+	frect.x = 1280 * .6 - rect.w/2;
+	frect.y = 720 * .15 - rect.h / 2;
+	frect.w = rect.w * .75;
+	frect.h = rect.h * .75;
+	m_Name = new SpriteObject(rect, frect);
+
 
 }
 
@@ -195,11 +262,25 @@ void MenuState::Render()
 
 	SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 128, 0, 128, 255);
 	SDL_RenderClear(Game::GetInstance().GetRenderer());
+
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("background"),m_backGround->GetSourceTransform(), m_backGround->GetDestinationFTransform());
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("credit"),creditButton->GetSourceTransform(), creditButton->GetDestinationFTransform());
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("game"),startButton->GetSourceTransform(), startButton->GetDestinationFTransform());
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("name"), m_Name->GetSourceTransform(), m_Name->GetDestinationFTransform());
 }
 
 void MenuState::Exit()
 {
 	std::cout << "Exiting Menu Screen" << std::endl;
+	delete m_backGround;
+	delete m_Name;
+	delete startButton;
+	delete creditButton;
+
+	m_backGround = nullptr;
+	m_Name = nullptr;
+	startButton = nullptr;
+	creditButton = nullptr;
 }
 
 void MenuState::Resume()

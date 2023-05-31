@@ -197,7 +197,7 @@ void GameState::Update(float deltaTime)
 		StateManager::ChangeState(new WinState);
 
 	}
-	if (timer > 5)
+	if (timer > 20.0f)
 	{
 		StateManager::ChangeState(new WinState);
 	}

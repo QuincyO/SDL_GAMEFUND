@@ -64,3 +64,21 @@ bool EventManager::KeyReleased(const SDL_Scancode key)
 {
 	return (s_currentKeyState[key] < s_lastKeyState[key]);
 }
+
+SDL_Point& EventManager::GetMousePosition()
+{
+	return s_mousePos;
+}
+
+void EventManager::SetCursor(const SDL_SystemCursor& cursor)
+{
+	SDL_FreeCursor(s_cursor);
+	s_cursor = SDL_CreateSystemCursor(cursor);
+	SDL_SetCursor(s_cursor);
+}
+
+void EventManager::Quit()
+{
+	delete s_lastKeyState;
+	SDL_FreeCursor(s_cursor);
+}

@@ -147,7 +147,6 @@ void GameState::Enter()
 	Mix_PlayMusic(gameMusic, -1);
 
 
-
 	m_pLevel = new TiledLevel(24, 32, 32, 32, "assets/Data/Tiledata.txt", "assets/Data/Level1.txt", "tiles");
 
 
@@ -252,6 +251,7 @@ void GameState::Resume()
 	std::cout << "Resuming GameState..." << std::endl;
 
 	Mix_ResumeMusic();
+	
 
 }
 

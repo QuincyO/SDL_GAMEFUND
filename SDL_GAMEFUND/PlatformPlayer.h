@@ -37,8 +37,8 @@ public:
     bool SetGrounded(bool g) { m_grounded = g; }
     float GetVelX() { return m_velX; }
     float GetVelY() { return m_velY; }
-    void SetX(float x) { m_destinationFTransform.x = x; }
-    void SetY(float y) { m_destinationFTransform.y = y; }
+    void SetX(float x) { m_destinationTransform.x = x; }
+    void SetY(float y) { m_destinationTransform.y = y; }
 
     
 

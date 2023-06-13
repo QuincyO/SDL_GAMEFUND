@@ -3,6 +3,19 @@
 #include <cstring>
 #include <iostream>
 
+const Uint8* EventManager::s_currentKeyState;
+Uint8* EventManager::s_lastKeyState;
+int EventManager::s_numKeys;
+
+int EventManager::s_lastKeyDown;
+int EventManager::s_lastKeyUp;
+SDL_Point EventManager::s_mousePos;
+Uint32 EventManager::s_currentMouseState;
+Uint32 EventManager::s_lastMouseState;
+
+SDL_Cursor* EventManager::s_cursor;
+
+
 void EventManager::Init()
 {
 	s_currentKeyState = SDL_GetKeyboardState(&s_numKeys);
@@ -63,6 +76,16 @@ bool EventManager::KeyPressed(const SDL_Scancode key)
 bool EventManager::KeyReleased(const SDL_Scancode key)
 {
 	return (s_currentKeyState[key] < s_lastKeyState[key]);
+}
+
+bool EventManager::MousePressed(const int button)
+{
+	return false;
+}
+
+bool EventManager::MouseReleased(const int button)
+{
+	return false;
 }
 
 SDL_Point& EventManager::GetMousePosition()

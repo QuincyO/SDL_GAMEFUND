@@ -42,7 +42,7 @@ void PlatformPlayer::Update(float deltaTime)
 		}
 		break;
 	case PlayerState::kRunning:
-		if (EventManager::KeyHeld(SDL_SCANCODE_A) && m_destinationFTransform.x > 0)
+		if (EventManager::KeyHeld(SDL_SCANCODE_A) && m_destinationTransform.x > 0)
 		{
 			m_accelX = -s_kAccelerationX;
 			if (!m_facingLeft)
@@ -50,7 +50,7 @@ void PlatformPlayer::Update(float deltaTime)
 				m_facingLeft = true;
 			}
 		}
-		else if (EventManager::KeyHeld(SDL_SCANCODE_D) && m_destinationFTransform.x < Game::kWidth - m_destinationFTransform.w)
+		else if (EventManager::KeyHeld(SDL_SCANCODE_D) && m_destinationTransform.x < Game::kWidth - m_destinationTransform.w)
 		{
 			m_accelX = s_kAccelerationX;
 			if (m_facingLeft) m_facingLeft = false;
@@ -71,12 +71,12 @@ void PlatformPlayer::Update(float deltaTime)
 		}
 		break;
 	case PlayerState::kJumping:
-		if (EventManager::KeyHeld(SDL_SCANCODE_A) && m_destinationFTransform.x > 0)
+		if (EventManager::KeyHeld(SDL_SCANCODE_A) && m_destinationTransform.x > 0)
 		{
 			m_accelX = -s_kAccelerationX;
 			if (!m_facingLeft) m_facingLeft = true;
 		}
-		else if (EventManager::KeyHeld(SDL_SCANCODE_D) && m_destinationFTransform.x < Game::kWidth - m_destinationFTransform.w)
+		else if (EventManager::KeyHeld(SDL_SCANCODE_D) && m_destinationTransform.x < Game::kWidth - m_destinationTransform.w)
 		{
 			m_accelX = s_kAccelerationX;
 			if (m_facingLeft) m_facingLeft = false;
@@ -95,13 +95,13 @@ void PlatformPlayer::Update(float deltaTime)
 	m_velX += m_accelX;
 	m_velX *= (m_grounded ? s_kDragX : 1.0f);
 	m_velX = std::min(std::max(m_velX, -s_kMaxVelocityX), s_kMaxVelocityX);
-	m_destinationFTransform.x += m_velX * deltaTime;
+	m_destinationTransform.x += m_velX * deltaTime;
 
 	//Player Movement Y Axis Second
 	m_velY += m_accelY + s_kGravity;
 	m_velY = std::min(std::max(m_velY, -s_kMaxVelocityY), s_kMaxVelocityY);
 
-	m_destinationFTransform.y += m_velY * deltaTime;
+	m_destinationTransform.y += m_velY * deltaTime;
 
 	//Resetting Accel Every Frame
 	m_accelX = 0.0f;
@@ -115,7 +115,7 @@ void PlatformPlayer::Update(float deltaTime)
 void PlatformPlayer::Render()
 {
 	SDL_RenderCopyExF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("player"),
-		&m_sourceTransform, &m_destinationFTransform, 0.0, nullptr, (m_facingLeft ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE));
+		&m_sourceTransform, &m_destinationTransform, 0.0, nullptr, (m_facingLeft ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE));
 
 }
 

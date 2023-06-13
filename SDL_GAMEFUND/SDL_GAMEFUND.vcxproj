@@ -203,6 +203,8 @@ xcopy "$(ProjectDir)assets" "$(OutDir)assets" /s /e /i /y
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MathManager.cpp" />
     <ClCompile Include="PlatformPlayer.cpp" />
+    <ClCompile Include="PlayButton.cpp" />
+    <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteObject.cpp" />
     <ClCompile Include="Statemanager.cpp" />
@@ -210,6 +212,7 @@ xcopy "$(ProjectDir)assets" "$(OutDir)assets" /s /e /i /y
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="TiledLevel.cpp" />
     <ClCompile Include="TileObject.cpp" />
+    <ClCompile Include="UI_Button.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimatedSprite.h" />
@@ -219,6 +222,8 @@ xcopy "$(ProjectDir)assets" "$(OutDir)assets" /s /e /i /y
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="MathManager.h" />
     <ClInclude Include="PlatformPlayer.h" />
+    <ClInclude Include="PlayButton.h" />
+    <ClInclude Include="SoundManager.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteObject.h" />
     <ClInclude Include="state.h" />
@@ -226,6 +231,7 @@ xcopy "$(ProjectDir)assets" "$(OutDir)assets" /s /e /i /y
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="TiledLevel.h" />
     <ClInclude Include="TileObject.h" />
+    <ClInclude Include="UI_Button.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

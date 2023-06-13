@@ -65,7 +65,7 @@
 		SDL_RenderClear(Game::GetInstance().GetRenderer());
 
 
-		SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("logo"), m_spriteLogo->GetSourceTransform(), m_spriteLogo->GetDestinationFTransform());
+		SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("logo"), m_spriteLogo->GetSourceTransform(), m_spriteLogo->GetDestinationTransform());
 
 	}
 
@@ -185,7 +185,7 @@ void GameState::Update(float deltaTime)
 	}
 
 
-	if (CollisionManager::AABBCheck(*m_object->GetDestinationFTransform(), *m_player->GetDestinationFTransform()))
+	if (CollisionManager::AABBCheck(*m_object->GetDestinationTransform(), *m_player->GetDestinationTransform()))
 	{
 		StateManager::ChangeState(new LoseState);
 	}
@@ -216,10 +216,10 @@ void GameState::Render()
 
 	m_pLevel->Render();
 
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("gameBackground"), m_background->GetSourceTransform(), m_background->GetDestinationFTransform());
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("wasd"), m_button->GetSourceTransform(), m_button->GetDestinationFTransform());
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("blueGuy"), m_object->GetSourceTransform(), m_object->GetDestinationFTransform());
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("player"), m_player->GetSourceTransform(), m_player->GetDestinationFTransform());
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("gameBackground"), m_background->GetSourceTransform(), m_background->GetDestinationTransform());
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("wasd"), m_button->GetSourceTransform(), m_button->GetDestinationTransform());
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("blueGuy"), m_object->GetSourceTransform(), m_object->GetDestinationTransform());
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("player"), m_player->GetSourceTransform(), m_player->GetDestinationTransform());
 
 }
 
@@ -313,9 +313,9 @@ void PauseState::Render()
 	SDL_SetRenderDrawBlendMode(Game::GetInstance().GetRenderer(), SDL_BLENDMODE_BLEND);
 	SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 128, 128, 128, 128);
 	SDL_RenderFillRect(Game::GetInstance().GetRenderer(), &rect);
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("pauseTitle"), m_pause->GetSourceTransform(), m_pause->GetDestinationFTransform());
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("pauseTitle"), m_pause->GetSourceTransform(), m_pause->GetDestinationTransform());
 
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("resumeButton"), m_button->GetSourceTransform(), m_button->GetDestinationFTransform());
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("resumeButton"), m_button->GetSourceTransform(), m_button->GetDestinationTransform());
 
 
 }
@@ -414,11 +414,11 @@ void MenuState::Render()
 	SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 128, 0, 128, 255);
 	SDL_RenderClear(Game::GetInstance().GetRenderer());
 
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("background"),m_backGround->GetSourceTransform(), m_backGround->GetDestinationFTransform());
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("background"),m_backGround->GetSourceTransform(), m_backGround->GetDestinationTransform());
 	
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("credit"),creditButton->GetSourceTransform(), creditButton->GetDestinationFTransform());
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("game"),startButton->GetSourceTransform(), startButton->GetDestinationFTransform());
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("name"), m_Name->GetSourceTransform(), m_Name->GetDestinationFTransform());
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("credit"),creditButton->GetSourceTransform(), creditButton->GetDestinationTransform());
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("game"),startButton->GetSourceTransform(), startButton->GetDestinationTransform());
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("name"), m_Name->GetSourceTransform(), m_Name->GetDestinationTransform());
 }
 
 void MenuState::Exit()
@@ -515,10 +515,10 @@ void CreditState::Render()
 	SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 255, 192, 203, 255);
 	SDL_RenderClear(Game::GetInstance().GetRenderer());
 
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("background"), m_background->GetSourceTransform(), m_background->GetDestinationFTransform());
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("creditTitle"), m_title->GetSourceTransform(), m_title->GetDestinationFTransform());
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("quincy"), m_name->GetSourceTransform(), m_name->GetDestinationFTransform());
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("menuButton"), m_button->GetSourceTransform(), m_button->GetDestinationFTransform());
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("background"), m_background->GetSourceTransform(), m_background->GetDestinationTransform());
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("creditTitle"), m_title->GetSourceTransform(), m_title->GetDestinationTransform());
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("quincy"), m_name->GetSourceTransform(), m_name->GetDestinationTransform());
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("menuButton"), m_button->GetSourceTransform(), m_button->GetDestinationTransform());
 
 
 }
@@ -607,10 +607,10 @@ void WinState::Render()
 	SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 0, 255, 0, 255);
 	SDL_RenderClear(Game::GetInstance().GetRenderer());
 	
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("background"), m_background->GetSourceTransform(), m_background->GetDestinationFTransform());
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("background"), m_background->GetSourceTransform(), m_background->GetDestinationTransform());
 
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("winTitle"), m_title->GetSourceTransform(), m_title->GetDestinationFTransform());
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("restartButton"), m_button->GetSourceTransform(), m_button->GetDestinationFTransform());
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("winTitle"), m_title->GetSourceTransform(), m_title->GetDestinationTransform());
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("restartButton"), m_button->GetSourceTransform(), m_button->GetDestinationTransform());
 }
 
 void WinState::Exit()
@@ -698,10 +698,10 @@ void LoseState::Render()
 	SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 255, 0, 0, 255);
 	SDL_RenderClear(Game::GetInstance().GetRenderer());
 
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("background"), m_background->GetSourceTransform(), m_background->GetDestinationFTransform());
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("background"), m_background->GetSourceTransform(), m_background->GetDestinationTransform());
 
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("lossTitle"), m_title->GetSourceTransform(), m_title->GetDestinationFTransform());
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("restartButton"), m_button->GetSourceTransform(), m_button->GetDestinationFTransform());
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("lossTitle"), m_title->GetSourceTransform(), m_title->GetDestinationTransform());
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("restartButton"), m_button->GetSourceTransform(), m_button->GetDestinationTransform());
 }
 
 void LoseState::Exit()

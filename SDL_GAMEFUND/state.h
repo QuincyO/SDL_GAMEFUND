@@ -1,6 +1,8 @@
 #pragma once
 #include <SDL.h>
 #include <vector>
+#include <map>
+#include <string>
 
 #include "SDL_image.h"
 #include "SDL_mixer.h"
@@ -22,6 +24,8 @@ public:
 	virtual void Render() = 0;
 	virtual void Exit() = 0;
 	virtual void Resume() {}
+
+	std::map<std::string, GameObject*> m_objects;
 protected:
 };
 
@@ -52,6 +56,7 @@ private:
 	SpriteObject* m_object;
 	SpriteObject* m_button;
 	float timer;
+
 
 public:
 	Mix_Music* gameMusic;

@@ -23,9 +23,10 @@ private:
     static const float s_kDragX;
 
 public:
+    PlatformPlayer(SDL_Rect sourceTransform, SDL_FRect destTransform);
     PlatformPlayer(int angle, int frameTime, int maxSprites, SDL_Rect sourceTransoform, SDL_FRect destinationTransform);
-    virtual void Update(float deltaTIme) override;
-    virtual void Render() override;
+    virtual void Update(float deltaTIme);
+    virtual void Render();
     void Jump();
     void Stop();
 

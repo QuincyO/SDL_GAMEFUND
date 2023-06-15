@@ -64,6 +64,7 @@ int Game::Init(const char* Title)
 	}
 
 
+	EventManager::Init();
 	StateManager::PushState(new TitleState());
 	m_keyStates = SDL_GetKeyboardState(nullptr);
 	m_running = true;
@@ -82,29 +83,16 @@ bool Game::IsRunning()
 	return m_running;
 }
 
+void Game::Quit()
+{
+	m_running = false;
+}
+
 void Game::HandleEvents()
 {
-	SDL_Event event;
-	while (SDL_PollEvent(&event))
-	{
-		switch (event.type)
-		{
-		case SDL_QUIT:
-			m_running = false;
-			break;
-
-
-		}
-	}
+	EventManager::HandleEvents();
 }
-bool Game::KeyDown(SDL_Scancode key)
-{
-	if (m_keyStates)
-	{
-		return m_keyStates[key] == 1;
-	}
-	return false;
-}
+
 void Game::Update(float deltaTime)
 {
 
@@ -130,6 +118,7 @@ void Game::Clean()
 
 	TextureManager::Quit();
 	StateManager::Quit();
+	EventManager::Quit();
 
 	delete this;
 }

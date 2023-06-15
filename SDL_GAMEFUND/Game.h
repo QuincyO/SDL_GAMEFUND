@@ -3,6 +3,7 @@
 #include <iostream>
 #include "StateManager.h"
 #include "TextureManager.h"
+#include "EventManager.h"
 #include "state.h"
 
 
@@ -21,8 +22,8 @@ public:
 	SDL_Renderer* GetRenderer();
 
 	bool IsRunning();
+	void Quit();
 	void HandleEvents();
-	bool KeyDown(SDL_Scancode key) ;
 	void Update(float deltaTime) ;
 	void Render() ;
 	void Clean();

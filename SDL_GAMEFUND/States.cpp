@@ -6,6 +6,8 @@
 #include "AnimatedSprite.h"
 #include "TiledLevel.h"
 #include "SpriteObject.h"
+#include "EventManager.h"
+#include "PlatformPlayer.h"
 #include "CollisionManager.h"
 
 
@@ -44,7 +46,7 @@
 
 	void TitleState::Update(float deltaTime)
 	{
-		if (Game::GetInstance().KeyDown(SDL_SCANCODE_T))
+		if (EventManager::KeyPressed(SDL_SCANCODE_T))
 		{
 			std::cout << "Changing to GameState" << std::endl;
 			StateManager::ChangeState(new MenuState());//Change to new GameState
@@ -87,11 +89,16 @@
 void GameState::Enter()
 {
 
-	TextureManager::Load("assets/Images/Tiles.png", "tiles");
+	TextureManager::Load("assets/Images/Tiles.png", "tiles"); 
+	TextureManager::Load("assets/Images/Player.png", "player1");
 	TextureManager::Load("assets/real/background2.png", "gameBackground");
 	TextureManager::Load("assets/real/wasd.png", "wasd");
 	TextureManager::Load("assets/platformer/PNG/Player/p1_walk/spritesheet.png", "player");
 	TextureManager::Load("assets/platformer/PNG/Player/p2_stand.png", "blueGuy");
+
+
+	m_objects.emplace("level", new TiledLevel(24, 32, 32, 32, "assets/Data/Tiledata.txt", "assets/Data/Level1.txt", "tiles"));
+	m_objects.emplace("player1", new PlatformPlayer({ 0,0,128,128 }, { 288,480,64,64 }));
 	SDL_Rect rect;
 	SDL_FRect frect;
 
@@ -157,29 +164,33 @@ void GameState::Update(float deltaTime)
 	m_pLevel->Update(deltaTime);
 	m_player->Animate(deltaTime);
 
+	if (EventManager::KeyPressed(SDL_SCANCODE_X))
+	{
+		StateManager::ChangeState(new TitleState());
+	}
 
-	if (Game::GetInstance().KeyDown(SDL_SCANCODE_P))
+	if (EventManager::KeyPressed(SDL_SCANCODE_P))
 	{
 		StateManager::PushState(new PauseState());
 	}
 
 
 
-	if (Game::GetInstance().KeyDown(SDL_SCANCODE_W))
+	if (EventManager::KeyPressed(SDL_SCANCODE_W))
 	{
 		m_object->UpdateYPosition(-kPlayerSpeed * deltaTime);
 	}
-	if (Game::GetInstance().KeyDown(SDL_SCANCODE_S))
+	if (EventManager::KeyPressed(SDL_SCANCODE_S))
 	{
 		m_object->UpdateYPosition(kPlayerSpeed * deltaTime);
 	}
 
-	if (Game::GetInstance().KeyDown(SDL_SCANCODE_A))
+	if (EventManager::KeyPressed(SDL_SCANCODE_A))
 	{
 		m_object->UpdateXPosition(-kPlayerSpeed * deltaTime);
 	}
 
-	if (Game::GetInstance().KeyDown(SDL_SCANCODE_D))
+	if (EventManager::KeyPressed(SDL_SCANCODE_D))
 	{
 		m_object->UpdateXPosition(kPlayerSpeed * deltaTime);
 	}
@@ -191,7 +202,7 @@ void GameState::Update(float deltaTime)
 	}
 
 
-	if (Game::GetInstance().KeyDown(SDL_SCANCODE_0))
+	if (EventManager::KeyPressed(SDL_SCANCODE_0))
 	{
 		StateManager::ChangeState(new WinState);
 
@@ -297,7 +308,7 @@ void PauseState::Enter()
 
 void PauseState::Update(float deltaTime)
 {
-	if (Game::GetInstance().GetInstance().KeyDown(SDL_SCANCODE_ESCAPE))
+	if (EventManager::KeyPressed(SDL_SCANCODE_R))
 	{
 		StateManager::PopState();
 	}
@@ -398,14 +409,14 @@ void MenuState::Enter()
 
 void MenuState::Update(float deltaTime)
 {
-	if (Game::GetInstance().KeyDown(SDL_SCANCODE_C)) {
-		StateManager::ChangeState(new CreditState);
-	}
+	//if (Game::GetInstance().KeyDown(SDL_SCANCODE_C)) {
+	//	StateManager::ChangeState(new CreditState);
+	//}
 
-	if (Game::GetInstance().KeyDown(SDL_SCANCODE_G))
-	{
-		StateManager::ChangeState(new GameState);
-	}
+	//if (Game::GetInstance().KeyDown(SDL_SCANCODE_G))
+	//{
+	//	StateManager::ChangeState(new GameState);
+	//}
 }
 
 void MenuState::Render()
@@ -685,13 +696,6 @@ void LoseState::Enter()
 
 }
 
-void LoseState::Update(float deltaTime)
-{
-	if (Game::GetInstance().KeyDown(SDL_SCANCODE_SPACE))
-	{
-		StateManager::ChangeState(new MenuState);
-	}
-}
 
 void LoseState::Render()
 {

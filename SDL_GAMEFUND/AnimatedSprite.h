@@ -12,8 +12,12 @@ public:
 		m_currentTime{ 0 },
 		m_frameRate{frameTime}
 	{}
+	AnimatedSprite(SDL_Rect source, SDL_FRect dest);
 
+
+	void SetAnimation(int angle, float frameTIme, int maxSpite);
 	void Animate(float deltaTime);
+	void Update(float deltaTime);
 protected:
 	int m_currentSpriteIndex;
 	int m_maxSprites;

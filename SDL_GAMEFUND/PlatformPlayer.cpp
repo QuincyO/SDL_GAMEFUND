@@ -3,43 +3,47 @@
 #include "EventManager.h"
 #include "TextureManager.h"
 #include "AnimatedSprite.h"
+#include "SoundManager.h"
 #include <cmath>
 
 const float PlatformPlayer::s_kAccelerationX = 250;
 const float PlatformPlayer::s_kGravity = 50;
-const float PlatformPlayer::s_kJumpForce = 2000;
+const float PlatformPlayer::s_kJumpForce = 2500;
 const float PlatformPlayer::s_kMaxVelocityX = 350;
 const float PlatformPlayer::s_kMaxVelocityY = 2000;
 const float PlatformPlayer::s_kDragX = 0.8f;
 
 PlatformPlayer::PlatformPlayer(SDL_Rect sourceTransform, SDL_FRect destTransform)
-	:AnimatedSprite()
+	:AnimatedSprite(sourceTransform,destTransform),
+	m_grounded{ false },
+	m_facingLeft{false},
+	m_accelX{0},
+	m_accelY{ 0 },
+	m_velX{ 0 },
+	m_velY{ 0 },
+	m_states{PlayerState::kIdle}
 {
+	SetAnimation(0.1f, 0, 1, 256);
+	SoundManager::LoadSound("assets/Sound/Effects/jump.wav", "Jump");
+	SoundManager::LoadSound("assets/Sound/Effects/land.wav", "Land");
 }
 
-PlatformPlayer::PlatformPlayer(int angle, int frameTime, int maxSprites, SDL_Rect sourceTransformation, SDL_FRect destinationTransform)
-	:AnimatedSprite(angle,frameTime,maxSprites,sourceTransformation,destinationTransform)
-	,m_grounded{false}
-	,m_facingLeft{false}
-	, m_accelX{ 0 }
-	, m_accelY{ 0 }
-	, m_velX{ 0 }
-	, m_velY{ 0 }
-	, m_states{ PlayerState::kIdle }
+PlatformPlayer::~PlatformPlayer()
 {
-	//SetAnimation(0.1f, 0, 1, 256);
+	SoundManager::UnloadSound("Jump");
+	SoundManager::UnloadSound("Land");
 }
-
 
 void PlatformPlayer::Update(float deltaTime)
 {
 	switch (m_states)
 	{
 	case PlayerState::kIdle:
+		//Transition to run
 		if (EventManager::KeyPressed(SDL_SCANCODE_A) || EventManager::KeyPressed(SDL_SCANCODE_D))
 		{
 			m_states = PlayerState::kRunning;
-			// SetAnimation(0.1f, 0, 8, 256);
+			 SetAnimation(0.1f, 0, 8, 256);
 		}
 		else if (EventManager::KeyPressed(SDL_SCANCODE_SPACE) && m_grounded)
 		{
@@ -47,6 +51,7 @@ void PlatformPlayer::Update(float deltaTime)
 		}
 		break;
 	case PlayerState::kRunning:
+		//Moving Left or Right
 		if (EventManager::KeyHeld(SDL_SCANCODE_A) && m_destinationTransform.x > 0)
 		{
 			m_accelX = -s_kAccelerationX;
@@ -72,7 +77,7 @@ void PlatformPlayer::Update(float deltaTime)
 		if (!EventManager::KeyHeld(SDL_SCANCODE_A) && !EventManager::KeyHeld(SDL_SCANCODE_D))
 		{
 			m_states = PlayerState::kIdle;
-			//setanimation();
+			SetAnimation(0.1f,0,1,256);
 		}
 		break;
 	case PlayerState::kJumping:
@@ -90,8 +95,9 @@ void PlatformPlayer::Update(float deltaTime)
 		//Hit the ground, transition to run
 		if (m_grounded)
 		{
+			SoundManager::PlaySound("Land");
 			m_states = PlayerState::kRunning;
-			//SetAnimation();
+			SetAnimation(0.1f,0,8,256);
 			
 		}
 	}
@@ -126,10 +132,11 @@ void PlatformPlayer::Render()
 
 void PlatformPlayer::Jump()
 {
-	m_accelX = -s_kJumpForce;
+	SoundManager::PlaySound("Jump");
+	m_accelY = -s_kJumpForce;
 	m_grounded = false;
 	m_states = PlayerState::kJumping;
-	//SetAnimation();
+	SetAnimation(0.1f,8,1,256);
 }
 
 void PlatformPlayer::Stop()

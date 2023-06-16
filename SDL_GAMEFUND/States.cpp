@@ -17,28 +17,7 @@
 	void TitleState::Enter()
 	{
 		std::cout << "Entering TitleState..." << std::endl;
-		SDL_Rect Rect = {
-			0,0,
-			1024,
-			1024
-		};
 
-
-		SDL_FRect fRect = {
-
-			(1280 / 2) - (Rect.w * .75 / 2), //Position X-Axis
-			(720 / 2) - (Rect.h * .7 / 2), //Position Y-Axis
-			Rect.w * .75, //Width Size
-			Rect.h * .7 //Height Size
-		};
-		m_spriteLogo = new SpriteObject(Rect, fRect);
-
-
-		TextureManager::Load("assets/real/Logo.png", "logo");
-		m_pMix = Mix_LoadWAV("assets/real/gmae.wav");
-
-		//Mix_VolumeChunk(m_pMusic, 100);
-		std::cout << Mix_PlayChannel(1, m_pMix, 0) << std::endl;
 
 		timer = 0.0f;
 
@@ -49,7 +28,7 @@
 		if (EventManager::KeyPressed(SDL_SCANCODE_T))
 		{
 			std::cout << "Changing to GameState" << std::endl;
-			StateManager::ChangeState(new MenuState());//Change to new GameState
+			StateManager::ChangeState(new GameState());//Change to new GameState
 		}
 		if (timer > 3.1f)
 		{
@@ -67,7 +46,6 @@
 		SDL_RenderClear(Game::GetInstance().GetRenderer());
 
 
-		SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("logo"), m_spriteLogo->GetSourceTransform(), m_spriteLogo->GetDestinationTransform());
 
 	}
 
@@ -75,12 +53,11 @@
 	{
 		std::cout << "Exiting Title Screen" << std::endl;
 		TextureManager::Unload("logo");
-		delete m_spriteLogo;
-		m_spriteLogo = nullptr;
+
 
 		m_pMUS = Mix_LoadMUS("assets/Caketown1.mp3");
 		Mix_VolumeMusic(40);
-		Mix_PlayMusic(m_pMUS,-1);
+		//Mix_PlayMusic(m_pMUS,-1);
 	}
 	//End of TitleScreen
 
@@ -90,115 +67,108 @@ void GameState::Enter()
 {
 
 	TextureManager::Load("assets/Images/Tiles.png", "tiles"); 
-	TextureManager::Load("assets/Images/Player.png", "player1");
-	TextureManager::Load("assets/real/background2.png", "gameBackground");
-	TextureManager::Load("assets/real/wasd.png", "wasd");
-	TextureManager::Load("assets/platformer/PNG/Player/p1_walk/spritesheet.png", "player");
-	TextureManager::Load("assets/platformer/PNG/Player/p2_stand.png", "blueGuy");
+	TextureManager::Load("assets/Images/Player.png", "player");
+
+	//TextureManager::Load("assets/real/background2.png", "gameBackground");
+	//TextureManager::Load("assets/real/wasd.png", "wasd");
+	////TextureManager::Load("assets/platformer/PNG/Player/p1_walk/spritesheet.png", "player");
+	//TextureManager::Load("assets/platformer/PNG/Player/p2_stand.png", "blueGuy");
 
 
 	m_objects.emplace("level", new TiledLevel(24, 32, 32, 32, "assets/Data/Tiledata.txt", "assets/Data/Level1.txt", "tiles"));
-	m_objects.emplace("player1", new PlatformPlayer({ 0,0,128,128 }, { 288,480,64,64 }));
-	SDL_Rect rect;
-	SDL_FRect frect;
-
-	SDL_QueryTexture(TextureManager::GetTexture("gameBackground"), NULL, NULL, &rect.w, &rect.h);
-	rect.x = 0;
-	rect.y = 0;
+	m_objects.emplace("player", new PlatformPlayer({ 0,0,128,128 }, { 288,480,64,64 }));
 
 
-	frect.x = 0;
-	frect.y = 0;
-	frect.w = rect.w;
-	frect.h = rect.h;
-	m_background = new SpriteObject(rect, frect);
-
-	SDL_QueryTexture(TextureManager::GetTexture("wasd"), NULL, NULL, &rect.w, &rect.h);
-	rect.x = 0;
-	rect.y = 0;
+	//Mix_PlayMusic(gameMusic, -1);
 
 
-	frect.x = 1280 * .8;
-	frect.y = 720 * .05;
-	frect.w = rect.w/2;
-	frect.h = rect.h/2;
-	m_button = new SpriteObject(rect, frect);
-
-	SDL_QueryTexture(TextureManager::GetTexture("blueGuy"), NULL, NULL, &rect.w, &rect.h);
-	rect.x = 0;
-	rect.y = 0;
-
-
-	frect.x = 1280 * .25;
-	frect.y = 720 * .25;
-	frect.w = rect.w ;
-	frect.h = rect.h ;
-	m_object = new SpriteObject(rect, frect);
-
-	SDL_QueryTexture(TextureManager::GetTexture("player"), NULL, NULL, &rect.x, &rect.y);
-	rect.x = 0;
-	rect.y = 0;
-	rect.w=72;
-	rect.h;
-
-
-	frect.x = 1280 * .5;
-	frect.y = 720 * .5;
-	frect.w = rect.w ;
-	frect.h = rect.h ;
-	m_player = new AnimatedSprite(NULL, .1, 11, rect, frect);
-
-
-	gameMusic = Mix_LoadMUS("assets/MainMenu.mp3");
-
-	Mix_PlayMusic(gameMusic, -1);
-
-
-	m_pLevel = new TiledLevel(24, 32, 32, 32, "assets/Data/Tiledata.txt", "assets/Data/Level1.txt", "tiles");
-
+	
 
 }
 
 void GameState::Update(float deltaTime)
 {
-	m_pLevel->Update(deltaTime);
-	m_player->Animate(deltaTime);
 
 	if (EventManager::KeyPressed(SDL_SCANCODE_X))
 	{
 		StateManager::ChangeState(new TitleState());
 	}
 
-	if (EventManager::KeyPressed(SDL_SCANCODE_P))
+	else if (EventManager::KeyPressed(SDL_SCANCODE_P))
 	{
 		StateManager::PushState(new PauseState());
 	}
-
-
-
-	if (EventManager::KeyPressed(SDL_SCANCODE_W))
+	else
 	{
-		m_object->UpdateYPosition(-kPlayerSpeed * deltaTime);
-	}
-	if (EventManager::KeyPressed(SDL_SCANCODE_S))
-	{
-		m_object->UpdateYPosition(kPlayerSpeed * deltaTime);
-	}
 
-	if (EventManager::KeyPressed(SDL_SCANCODE_A))
-	{
-		m_object->UpdateXPosition(-kPlayerSpeed * deltaTime);
-	}
-
-	if (EventManager::KeyPressed(SDL_SCANCODE_D))
-	{
-		m_object->UpdateXPosition(kPlayerSpeed * deltaTime);
-	}
+	
+		for (auto objects : m_objects)
+		{
+			objects.second->Update(deltaTime);
+		}
 
 
-	if (CollisionManager::AABBCheck(*m_object->GetDestinationTransform(), *m_player->GetDestinationTransform()))
-	{
-		StateManager::ChangeState(new LoseState);
+		for (unsigned int i = 0; i < static_cast<TiledLevel*>(m_objects["level"])->GetObstacles().size(); i++)
+		{
+			SDL_FRect* obstacleColliderTransform = static_cast<TiledLevel*>(m_objects["level"])->GetObstacles()[i]->GetDestinationTransform();
+
+			float obstacleLeft = obstacleColliderTransform->x;
+			float obstacleRight = obstacleColliderTransform->x + obstacleColliderTransform->w;
+			float obstacleTop = obstacleColliderTransform->y;
+			float obstacleBottom = obstacleColliderTransform->y + obstacleColliderTransform->h;
+
+			SDL_FRect* PlayerColliderTransform = m_objects["player"]->GetDestinationTransform();
+
+			float playerLeft = PlayerColliderTransform->x;
+			float playerRight = PlayerColliderTransform->x + PlayerColliderTransform->w;
+			float playerTop = PlayerColliderTransform->y;
+			float playerBottom = PlayerColliderTransform->y + PlayerColliderTransform->h;
+
+
+			//Checking horizontal overlap by comparing right vs left andleft vs right
+			bool xOverLap = playerLeft<obstacleRight&& playerRight>obstacleLeft;
+
+			//Checking Vertical overlap by comparing top vs bottom and bottom vs top
+			bool yOverLap = playerTop <obstacleBottom&& playerBottom>obstacleTop;
+
+			//Used to determine which direction the colliusion came from
+			float bottomCollision = obstacleBottom - PlayerColliderTransform->y;
+			float topCollision = playerBottom - obstacleColliderTransform->y;
+			float leftCollision = playerRight - obstacleColliderTransform->x;
+			float rightCollision = obstacleRight - PlayerColliderTransform->x;
+
+			if (xOverLap && yOverLap)
+			{
+				PlatformPlayer* pPlayer = static_cast<PlatformPlayer*> (m_objects["player"]);
+
+				//Top Collision
+				if (topCollision < bottomCollision && topCollision < leftCollision && topCollision < rightCollision)
+				{
+					pPlayer->StopY();
+					pPlayer->SetY(PlayerColliderTransform->y - topCollision);
+					pPlayer->SetGrounded(true);
+				}
+				//Bottom Collision
+				if (bottomCollision < topCollision && bottomCollision < leftCollision && bottomCollision < rightCollision)
+				{
+					pPlayer->StopY();
+					pPlayer->SetY(PlayerColliderTransform->y + bottomCollision);
+				}
+				//Left Collision
+				if (leftCollision < rightCollision && leftCollision < topCollision && leftCollision < bottomCollision)
+				{
+					pPlayer->StopX();
+					pPlayer->SetX(PlayerColliderTransform->x - leftCollision);
+				}
+				//Right Collision
+				if ((rightCollision < leftCollision) && (rightCollision < bottomCollision) && (rightCollision < topCollision))
+				{
+					pPlayer->StopX();
+					pPlayer->SetX(PlayerColliderTransform->x + rightCollision);
+				}
+
+			}
+		}
 	}
 
 
@@ -207,10 +177,7 @@ void GameState::Update(float deltaTime)
 		StateManager::ChangeState(new WinState);
 
 	}
-	if (timer > 20.0f)
-	{
-		StateManager::ChangeState(new WinState);
-	}
+
 
 	timer += deltaTime;
 		
@@ -223,14 +190,10 @@ void GameState::Render()
 	SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 0, 0, 255, 255);
 	SDL_RenderClear(Game::GetInstance().GetRenderer());
 
-
-
-	m_pLevel->Render();
-
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("gameBackground"), m_background->GetSourceTransform(), m_background->GetDestinationTransform());
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("wasd"), m_button->GetSourceTransform(), m_button->GetDestinationTransform());
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("blueGuy"), m_object->GetSourceTransform(), m_object->GetDestinationTransform());
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("player"), m_player->GetSourceTransform(), m_player->GetDestinationTransform());
+	for (auto objects : m_objects)
+	{
+		objects.second->Render();
+	}
 
 }
 
@@ -239,20 +202,11 @@ void GameState::Exit()
 	std::cout<<"Exiting GameState.." << std::endl;
 	TextureManager::Unload("tiles");
 
-	delete m_background;
-	delete m_button;
-	delete m_object;
-	delete m_player;
-
-	m_background = nullptr;
-	m_button = nullptr;
-	m_object = nullptr;
-	m_player = nullptr;
-
-	delete m_pLevel;
-	m_pLevel = nullptr;
-
-
+	for (auto objects : m_objects)
+	{
+		delete objects.second;
+	}
+	m_objects.clear();
 	Mix_FreeMusic(gameMusic);
 	gameMusic = nullptr;
 }
@@ -276,31 +230,7 @@ void PauseState::Enter()
 	SDL_Rect tRect;
 	SDL_FRect frect;
 
-	SDL_QueryTexture(TextureManager::GetTexture("pauseTitle"), NULL, NULL, &tRect.w, &tRect.h);
-	tRect.x = 0;
-	tRect.y = 0;
-	tRect.w;
-	tRect.h;
 
-
-	frect.x = rect.x + (rect.w/2) - (tRect.w/2);
-	frect.y = rect.y;
-	frect.w = tRect.w ;
-	frect.h = tRect.h;
-	m_pause = new SpriteObject(tRect, frect);
-
-	SDL_QueryTexture(TextureManager::GetTexture("resumeButton"), NULL, NULL, &tRect.w, &tRect.h);
-	tRect.x = 0;
-	tRect.y = 0;
-	tRect.w;
-	tRect.h;
-
-
-	frect.x = rect.x + (rect.w / 2) - (tRect.w / 4);
-	frect.y = rect.y + rect.h*.85;
-	frect.w = tRect.w/2;
-	frect.h = tRect.h/2;
-	m_button = new SpriteObject(tRect, frect);
 
 	Mix_PauseMusic();
 
@@ -324,9 +254,7 @@ void PauseState::Render()
 	SDL_SetRenderDrawBlendMode(Game::GetInstance().GetRenderer(), SDL_BLENDMODE_BLEND);
 	SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 128, 128, 128, 128);
 	SDL_RenderFillRect(Game::GetInstance().GetRenderer(), &rect);
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("pauseTitle"), m_pause->GetSourceTransform(), m_pause->GetDestinationTransform());
 
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("resumeButton"), m_button->GetSourceTransform(), m_button->GetDestinationTransform());
 
 
 }
@@ -334,10 +262,7 @@ void PauseState::Render()
 void PauseState::Exit()
 {
 	std::cout << "Exiting Pause State..." << std::endl;
-	delete m_pause;
-	delete m_button;
-	m_pause = nullptr;
-	m_button = nullptr;
+
 
 }
 
@@ -353,55 +278,6 @@ void MenuState::Enter()
 
 
 
-	SDL_Rect rect =
-	{
-		0,0,
-		1280,
-		720
-	};
-	SDL_FRect frect =
-	{
-		0,0,1280,720
-	};
-
-	m_backGround = new SpriteObject(rect, frect);
-	
-	rect.x = 0;
-	rect.y = 0;
-	rect.w = 587;
-	rect.h = 79;
-	
-
-	frect.x = 1280*.25 - rect.w/2;
-	frect.y =720*.85 - rect.h/2;
-	frect.w = rect.w*.75;
-	frect.h = rect.h*.75;
-	creditButton = new SpriteObject(rect, frect);
-
-	rect.x = 0;
-	rect.y = 0;
-	rect.w = 552;
-	rect.h = 80;
-
-
-	frect.x = 1280 * .85 - rect.w / 2;
-	frect.y = 720 * .85 - rect.h / 2;
-	frect.w = rect.w * .75;
-	frect.h = rect.h * .75;
-	startButton = new SpriteObject(rect, frect);
-
-	rect.x = 0;
-	rect.y = 0;
-	rect.w = 792;
-	rect.h = 96;
-
-
-	frect.x = 1280 * .6 - rect.w/2;
-	frect.y = 720 * .15 - rect.h / 2;
-	frect.w = rect.w * .75;
-	frect.h = rect.h * .75;
-	m_Name = new SpriteObject(rect, frect);
-
 
 
 
@@ -409,14 +285,14 @@ void MenuState::Enter()
 
 void MenuState::Update(float deltaTime)
 {
-	//if (Game::GetInstance().KeyDown(SDL_SCANCODE_C)) {
-	//	StateManager::ChangeState(new CreditState);
-	//}
+	if (EventManager::KeyPressed(SDL_SCANCODE_C)) {
+		StateManager::ChangeState(new CreditState);
+	}
 
-	//if (Game::GetInstance().KeyDown(SDL_SCANCODE_G))
-	//{
-	//	StateManager::ChangeState(new GameState);
-	//}
+	if (EventManager::KeyPressed(SDL_SCANCODE_G))
+	{
+		StateManager::ChangeState(new GameState);
+	}
 }
 
 void MenuState::Render()
@@ -425,25 +301,13 @@ void MenuState::Render()
 	SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 128, 0, 128, 255);
 	SDL_RenderClear(Game::GetInstance().GetRenderer());
 
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("background"),m_backGround->GetSourceTransform(), m_backGround->GetDestinationTransform());
-	
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("credit"),creditButton->GetSourceTransform(), creditButton->GetDestinationTransform());
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("game"),startButton->GetSourceTransform(), startButton->GetDestinationTransform());
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("name"), m_Name->GetSourceTransform(), m_Name->GetDestinationTransform());
+
 }
 
 void MenuState::Exit()
 {
 	std::cout << "Exiting Menu Screen" << std::endl;
-	delete m_backGround;
-	delete m_Name;
-	delete startButton;
-	delete creditButton;
 
-	m_backGround = nullptr;
-	m_Name = nullptr;
-	startButton = nullptr;
-	creditButton = nullptr;
 }
 
 void MenuState::Resume()
@@ -461,61 +325,13 @@ void CreditState::Enter()
 	TextureManager::Load("assets/real/Credit.png", "creditTitle");
 	TextureManager::Load("assets/real/menu.png", "menuButton");
 	TextureManager::Load("assets/real/Quincy.png", "quincy");
-	
-	rect.x = 0;
-	rect.y = 0;
-	rect.w = 1280;
-	rect.h = 720;
 
-
-	frect.x = 0;
-	frect.y = 0;
-	frect.w = 1280;
-	frect.h = 720;
-
-	m_background = new SpriteObject(rect, frect);
-
-	rect.x = 0;
-	rect.y = 0;
-	rect.w = 256;
-	rect.h = 79;
-
-
-	frect.x = 1280*.5 - (rect.w/2);
-	frect.y = 720*.10 - (rect.h/2);
-	frect.w = rect.w;
-	frect.h = rect.h;
-	m_title = new SpriteObject(rect, frect);
-
-	rect.x = 0;
-	rect.y = 0;
-	rect.w = 256;
-	rect.h = 79;
-
-
-	frect.x = 1280 * .5 - (rect.w / 2);
-	frect.y = 720 * .20 - (rect.h / 2);
-	frect.w = rect.w;
-	frect.h = rect.h;
-	m_name = new SpriteObject(rect, frect);
-
-	rect.x = 0;
-	rect.y = 0;
-	rect.w = 719;
-	rect.h = 96;
-
-
-	frect.x = 1280 * .5 - (rect.w / 2);
-	frect.y = 720 * .88 - (rect.h / 2);
-	frect.w = rect.w;
-	frect.h = rect.h;
-	m_button = new SpriteObject(rect, frect);
 
 }
 
 void CreditState::Update(float deltaTime)
 {
-	if (Game::GetInstance().KeyDown(SDL_SCANCODE_ESCAPE))
+	if (EventManager::KeyPressed(SDL_SCANCODE_ESCAPE))
 	{
 		StateManager::ChangeState(new MenuState);
 	}
@@ -526,10 +342,6 @@ void CreditState::Render()
 	SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 255, 192, 203, 255);
 	SDL_RenderClear(Game::GetInstance().GetRenderer());
 
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("background"), m_background->GetSourceTransform(), m_background->GetDestinationTransform());
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("creditTitle"), m_title->GetSourceTransform(), m_title->GetDestinationTransform());
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("quincy"), m_name->GetSourceTransform(), m_name->GetDestinationTransform());
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("menuButton"), m_button->GetSourceTransform(), m_button->GetDestinationTransform());
 
 
 }
@@ -537,15 +349,7 @@ void CreditState::Render()
 void CreditState::Exit()
 {
 	std::cout << "Exiting Credit State" << std::endl;
-	delete m_background;
-	delete m_button;
-	delete m_name;
-	delete m_title;
 
-	m_background = nullptr;
-	m_button = nullptr;
-	m_name = nullptr;
-	m_title = nullptr;
 }
 
 void CreditState::Resume()
@@ -562,51 +366,13 @@ void WinState::Enter()
 	TextureManager::Load("assets/real/SpaceMenu.png", "restartButton");
 
 
-	SDL_QueryTexture(TextureManager::Load("assets/real/background.png","background"), NULL, NULL, &rect.w,&rect.h);
-	rect.x = 0;
-	rect.y = 0;
-	rect.w = 1280;
-	rect.h = 720 ;
 
-	frect.x = 0;
-	frect.y = 0;
-	frect.w = 1280;
-	frect.h = 720;
-
-	m_background = new SpriteObject(rect, frect);
-
-
-	SDL_QueryTexture(TextureManager::GetTexture("winTitle"), NULL, NULL, &rect.w, &rect.h);
-	rect.x = 0;
-	rect.y = 0;
-	rect.w;
-	rect.h;
-
-	frect.x = 1280*.5 - (rect.w/2);
-	frect.y = 720*.15;
-	frect.w = rect.w;
-	frect.h = rect.h;
-
-	m_title = new SpriteObject(rect, frect);
-
-	SDL_QueryTexture(TextureManager::GetTexture("restartButton"), NULL, NULL, &rect.w, &rect.h);
-	rect.x = 0;
-	rect.y = 0;
-	rect.w;
-	rect.h;
-
-	frect.x = 1280 *.5 - (rect.w/2);
-	frect.y = 720*.85;
-	frect.w = rect.w;
-	frect.h = rect.h;
-
-	m_button = new SpriteObject(rect, frect);
 	
 }
 
 void WinState::Update(float deltaTime)
 {
-	if (Game::GetInstance().KeyDown(SDL_SCANCODE_SPACE))
+	if (EventManager::KeyPressed(SDL_SCANCODE_SPACE))
 	{
 		StateManager::ChangeState(new MenuState);
 	}
@@ -617,24 +383,14 @@ void WinState::Render()
 {
 	SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 0, 255, 0, 255);
 	SDL_RenderClear(Game::GetInstance().GetRenderer());
-	
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("background"), m_background->GetSourceTransform(), m_background->GetDestinationTransform());
 
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("winTitle"), m_title->GetSourceTransform(), m_title->GetDestinationTransform());
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("restartButton"), m_button->GetSourceTransform(), m_button->GetDestinationTransform());
 }
 
 void WinState::Exit()
 {
 	std::cout << "Exiting Win State" << std::endl;
 
-	delete m_background;
-	delete m_button;
-	delete m_title;
 
-	m_background = nullptr;
-	m_button = nullptr;
-	m_title = nullptr;
 	m_pMUS = Mix_LoadMUS("assets/Caketown1.mp3");
 	Mix_VolumeMusic(40);
 	Mix_PlayMusic(m_pMUS, -1);
@@ -654,45 +410,6 @@ void LoseState::Enter()
 	TextureManager::Load("assets/real/SpaceMenu.png", "restartButton");
 
 
-	SDL_QueryTexture(TextureManager::Load("assets/real/background.png", "background"), NULL, NULL, &rect.w, &rect.h);
-	rect.x = 0;
-	rect.y = 0;
-	rect.w = 1280;
-	rect.h = 720;
-
-	frect.x = 0;
-	frect.y = 0;
-	frect.w = 1280;
-	frect.h = 720;
-
-	m_background = new SpriteObject(rect, frect);
-
-
-	SDL_QueryTexture(TextureManager::GetTexture("lossTitle"), NULL, NULL, &rect.w, &rect.h);
-	rect.x = 0;
-	rect.y = 0;
-	rect.w;
-	rect.h;
-
-	frect.x = 1280 * .5 - (rect.w / 2);
-	frect.y = 720 * .15;
-	frect.w = rect.w;
-	frect.h = rect.h;
-
-	m_title = new SpriteObject(rect, frect);
-
-	SDL_QueryTexture(TextureManager::GetTexture("restartButton"), NULL, NULL, &rect.w, &rect.h);
-	rect.x = 0;
-	rect.y = 0;
-	rect.w;
-	rect.h;
-
-	frect.x = 1280 * .5 - (rect.w / 2);
-	frect.y = 720 * .85;
-	frect.w = rect.w;
-	frect.h = rect.h;
-
-	m_button = new SpriteObject(rect, frect);
 
 }
 
@@ -702,22 +419,12 @@ void LoseState::Render()
 	SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 255, 0, 0, 255);
 	SDL_RenderClear(Game::GetInstance().GetRenderer());
 
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("background"), m_background->GetSourceTransform(), m_background->GetDestinationTransform());
-
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("lossTitle"), m_title->GetSourceTransform(), m_title->GetDestinationTransform());
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture("restartButton"), m_button->GetSourceTransform(), m_button->GetDestinationTransform());
 }
 
 void LoseState::Exit()
 {
 	std::cout << "Exiting LoseState" << std::endl;
-	delete m_background;
-	delete m_button;
-	delete m_title;
 
-	m_background = nullptr;
-	m_button = nullptr;
-	m_title = nullptr;
 
 	m_pMUS = Mix_LoadMUS("assets/Caketown1.mp3");
 	Mix_VolumeMusic(40);

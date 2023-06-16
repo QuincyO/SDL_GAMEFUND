@@ -2,7 +2,7 @@
 #include <vector>
 #include <map>
 #include "GameObject.h"
-class TileObject;
+#include "TileObject.h"
 
 class TiledLevel :
     public GameObject
@@ -11,9 +11,11 @@ public :
     TiledLevel(int row, int cols, int tileWidth, int tileHeight,
         const char* tileData, const char* levelData, const char* tileKey);
     ~TiledLevel();
-    virtual void Update(float deltaTime) override;
+    virtual void Update([[maybe_unused]] float deltaTime) override;
     virtual void Render() override;
-    std::vector<TileObject*>& GetObstacles() { return m_obstacles; }
+
+
+    std::vector<Tile*>& GetObstacles() { return m_obstacles; }
 
 private:
     const char* m_tileKey;
@@ -21,8 +23,8 @@ private:
     int m_cols;
 
     //Our Map of 16 protoype TileObjectrs. From the Tiledata file
-    std::map<char, TileObject*> m_tiles;
-    std::vector<std::vector<TileObject*>> m_levelTiles; //2D Vector
-    std::vector<TileObject*> m_obstacles;
+    std::map<char, Tile*> m_tiles;
+    std::vector<std::vector<Tile*>> m_levelTiles; //2D Vector
+    std::vector<Tile*> m_obstacles;
 };
 

@@ -39,7 +39,7 @@ void EventManager::HandleEvents()
 		switch (event.type)
 		{
 		case SDL_QUIT:
-			Game::GetInstance().Clean();
+			Game::GetInstance().Quit();
 			break;
 		case SDL_KEYDOWN:
 			s_lastKeyDown = event.key.keysym.sym;
@@ -48,7 +48,7 @@ void EventManager::HandleEvents()
 			s_lastKeyUp = event.key.keysym.sym;
 			if (event.key.keysym.sym == SDLK_ESCAPE)
 			{
-				Game::GetInstance().Clean();
+				Game::GetInstance().Quit();
 			}
 			break;
 
@@ -78,14 +78,32 @@ bool EventManager::KeyReleased(const SDL_Scancode key)
 	return (s_currentKeyState[key] < s_lastKeyState[key]);
 }
 
+int EventManager::LastKeyUp()
+{
+	return s_lastKeyUp;
+}
+
+int EventManager::LastKeyDown()
+{
+	return s_lastKeyDown;
+}
+
+bool EventManager::MouseHeld(const int button)
+{
+	if (button >= 1 && button <= 3)
+		return (s_currentMouseState & SDL_BUTTON(button));
+	else
+		return false;
+}
+
 bool EventManager::MousePressed(const int button)
 {
-	return false;
+	return ((s_currentMouseState)&SDL_BUTTON(button)) > (s_lastMouseState & SDL_BUTTON(button));
 }
 
 bool EventManager::MouseReleased(const int button)
 {
-	return false;
+	return ((s_currentMouseState & SDL_BUTTON(button)) < (s_lastMouseState & SDL_BUTTON(button)));
 }
 
 SDL_Point& EventManager::GetMousePosition()

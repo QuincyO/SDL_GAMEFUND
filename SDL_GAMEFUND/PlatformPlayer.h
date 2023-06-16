@@ -1,6 +1,8 @@
 #pragma once
 #include "AnimatedSprite.h"
 
+
+
 class PlatformPlayer :
     public AnimatedSprite
 {
@@ -24,7 +26,7 @@ private:
 
 public:
     PlatformPlayer(SDL_Rect sourceTransform, SDL_FRect destTransform);
-    PlatformPlayer(int angle, int frameTime, int maxSprites, SDL_Rect sourceTransoform, SDL_FRect destinationTransform);
+    ~PlatformPlayer();
     virtual void Update(float deltaTIme);
     virtual void Render();
     void Jump();
@@ -35,14 +37,10 @@ public:
     void SetAccelX(float x) { m_accelX = x; }
     void SetAccelY(float y) { m_accelY = y; }
     bool IsGrounded() { return m_grounded; }
-    bool SetGrounded(bool g) { m_grounded = g; }
+    void SetGrounded(bool g) { m_grounded = g; }
     float GetVelX() { return m_velX; }
     float GetVelY() { return m_velY; }
     void SetX(float x) { m_destinationTransform.x = x; }
     void SetY(float y) { m_destinationTransform.y = y; }
-
-    
-
-
 };
 

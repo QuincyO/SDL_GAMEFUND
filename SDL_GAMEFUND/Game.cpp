@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "SoundManager.h"
 
 
 Game::Game()
@@ -56,13 +57,12 @@ int Game::Init(const char* Title)
 		std::cout << "Renderer Failed to Load. Error Code: " << SDL_GetError() << std::endl;
 		return 3;
 	}
-
-
-	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) == 0)
+	if (SoundManager::Init())
 	{
-		std::cout << "Audio Opened:" << std::endl;
-	}
+		cout << "Sound Manager Init Good!" << endl;
 
+	}
+	else Game::Quit();
 
 	EventManager::Init();
 	StateManager::PushState(new TitleState());
@@ -112,13 +112,13 @@ void Game::Render()
 void Game::Clean()
 {
 	std::cout << "Cleaning Engine..." << std::endl;
+	TextureManager::Quit();
+	StateManager::Quit();
+	EventManager::Quit();
 	SDL_DestroyRenderer(p_Renderer);
 	SDL_DestroyWindow(p_Window);
 	SDL_Quit();
 
-	TextureManager::Quit();
-	StateManager::Quit();
-	EventManager::Quit();
 
 	delete this;
 }

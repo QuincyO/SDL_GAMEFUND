@@ -24,7 +24,7 @@ TiledLevel::TiledLevel(int rows, int cols, int tileWidth, int tileHeight,
 		{
 			inFile >> key >> x >> y >> isObstacle >> isHazard;
 			m_tiles.emplace(key,
-				new TileObject(
+				new Tile(
 					{ x * tileWidth,y*tileHeight,tileWidth,tileHeight },
 					{0.0f,0.0f,(float)tileWidth,(float)tileHeight},
 					isObstacle, isHazard));
@@ -71,7 +71,7 @@ TiledLevel::~TiledLevel()
 	m_obstacles.clear();
 
 	//Clear the original Tiles
-	for (std::map<char, TileObject*>::iterator i = m_tiles.begin(); i != m_tiles.end();i++)
+	for (std::map<char, Tile*>::iterator i = m_tiles.begin(); i != m_tiles.end();i++)
 	{
 		delete i->second;
 		i->second = nullptr;
@@ -79,7 +79,7 @@ TiledLevel::~TiledLevel()
 	m_tiles.clear();
 }
 
-void TiledLevel::Update(float deltaTime)
+void TiledLevel::Update([[maybe_unused]] float deltaTime)
 {
 
 }
@@ -90,8 +90,8 @@ void TiledLevel::Render()
 	{
 		for (int col = 0; col < m_cols; ++col)
 		{
-			//SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture(m_tileKey),
-			//	m_levelTiles[row][col]->GetSourceTransform(),m_levelTiles[row][col]->GetDestinationTransform());
+			SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture(m_tileKey),
+				m_levelTiles[row][col]->GetSourceTransform(),m_levelTiles[row][col]->GetDestinationTransform());
 			
 		}
 	}

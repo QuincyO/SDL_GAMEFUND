@@ -123,7 +123,7 @@ void SoundManager::PlaySound(const string& id, const int loop /* = 0*/, const in
 {
 	if (channel != -1 && Mix_Playing(channel))
 		return;
-	if (Mix_PlayChannel(channel, s_sfxs[id], loop) == 1)
+	if (Mix_PlayChannel(channel, s_sfxs[id], loop) == -1)
 		cout << "unable to play SFX: Error - " << Mix_GetError() << endl;
 }
 

@@ -5,10 +5,13 @@ class GameObject
 {
 public:
 	GameObject()
-		:m_destinationTransform({ 0,0,0,0 }){}
-	GameObject(SDL_FRect destination)
+		:m_destinationTransform({ 0,0,0,0 })
+	{	}
+
+
+	GameObject(const SDL_FRect destination)
 		:m_destinationTransform(destination)
-	{}
+	{	}
 	virtual ~GameObject() = default;
 
 	virtual void Update(float deltaTime) = 0;

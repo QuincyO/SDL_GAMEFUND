@@ -74,7 +74,7 @@ public:
 	virtual void Render() override;
 	virtual void Exit() override;
 private:
-
+	//Pause Box
 	SDL_Rect rect = { 1280/2 - (512/2),128,512,512};
 };
 

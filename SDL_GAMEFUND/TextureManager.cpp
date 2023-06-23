@@ -21,6 +21,7 @@ SDL_Texture* TextureManager::Load(const char* path, const std::string key)
 	return temp;
 }
 
+
 void TextureManager::Unload(const std::string key)
 {
 	if (s_textures.find(key) != s_textures.end())

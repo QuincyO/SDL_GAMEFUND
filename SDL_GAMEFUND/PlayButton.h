@@ -6,6 +6,7 @@ class PlayButton :
 public:
     PlayButton(SDL_Rect source, SDL_FRect destination, const char* textureKey);
 private:
+    virtual void Update(float deltaTime) override ;
     virtual void Execute() override;
 };
 

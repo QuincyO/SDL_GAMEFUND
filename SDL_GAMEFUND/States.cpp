@@ -9,17 +9,43 @@
 #include "EventManager.h"
 #include "PlatformPlayer.h"
 #include "CollisionManager.h"
+#include "SoundManager.h"
+#include "PlayButton.h"
 
 
 
 //Begin Titlescreen
 
-	void TitleState::Enter()
-	{
-		std::cout << "Entering TitleState..." << std::endl;
+void TitleState::Enter()
+{
+	std::cout << "Entering TitleState..." << std::endl;
+
+	//Loading Textures and Music
+	TextureManager::Load("assets/Backgrounds/menuBackground.png", "TitleBackground");
+	TextureManager::Load("assets/Images/Buttons/playSheet.png", "PlayButton");
+	TextureManager::Load("assets/sprites/TitleSprite.png", "GameTitle");
+	SoundManager::LoadMusic("assets/audio/Mutara.mp3", "TitleMusic");
+	SoundManager::PlayMusic("TitleMusic");
 
 
-		timer = 0.0f;
+
+	SDL_Rect source = { 0,0,4000,2000 };
+	SDL_FRect dest = { 0, 0, Game::GetInstance().kWidth,Game::GetInstance().kHeight };
+
+	m_objects.emplace("MenuBackground", new Static_Image(source, dest, "TitleBackground"));
+
+	source = { 0,0,192,128 };
+	dest = { Game::GetInstance().kWidth * .5f - source.w / 2,Game::GetInstance().kHeight * .75f,(float)source.w,(float)source.h };
+
+	m_objects.emplace("PlayButton", new PlayButton(source, dest, "PlayButton"));
+
+	source = { 0,0,1184,108 };
+	dest = {Game::GetInstance().kWidth * .5f - source.w / 2, Game::GetInstance().kHeight * .15f, (float)source.w, (float)source.h};
+
+	m_objects.emplace("GameTitle", new Static_Image(source, dest, "GameTitle"));
+
+
+
 
 	}
 
@@ -30,9 +56,14 @@
 			std::cout << "Changing to GameState" << std::endl;
 			StateManager::ChangeState(new GameState());//Change to new GameState
 		}
+
+
+		for (auto& object : m_objects)
+		{
+			object.second->Update(deltaTime);
+		}
 		if (timer > 3.1f)
 		{
-			StateManager::ChangeState(new MenuState());
 		}
 
 		timer += deltaTime;
@@ -45,19 +76,29 @@
 		SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 0, 0, 0, 255);
 		SDL_RenderClear(Game::GetInstance().GetRenderer());
 
-
+		for (auto& object : m_objects)
+		{
+			object.second->Render();
+		}
 
 	}
 
 	void TitleState::Exit()
 	{
 		std::cout << "Exiting Title Screen" << std::endl;
-		TextureManager::Unload("logo");
+		TextureManager::Unload("PlayButton");
+		TextureManager::Unload("TitleBackground");
+		SoundManager::UnloadMusic("TitleMusic");
+
+		for (auto& object : m_objects)
+		{
+			delete object.second;
+			object.second = nullptr;
+		}
+		m_objects.clear();
 
 
-		m_pMUS = Mix_LoadMUS("assets/Caketown1.mp3");
-		Mix_VolumeMusic(40);
-		//Mix_PlayMusic(m_pMUS,-1);
+
 	}
 	//End of TitleScreen
 
@@ -267,95 +308,7 @@ void PauseState::Exit()
 }
 
 
-//Start of Menu Screen
-void MenuState::Enter()
-{
-	std::cout << "Rendering Menu Screen" << std::endl;
-	TextureManager::Load("assets/real/Background.png", "background");
-	TextureManager::Load("assets/real/Credits.png", "credit");
-	TextureManager::Load("assets/real/Game.png", "game");
-	TextureManager::Load("assets/real/Name.png", "name");
 
-
-
-
-
-
-}
-
-void MenuState::Update(float deltaTime)
-{
-	if (EventManager::KeyPressed(SDL_SCANCODE_C)) {
-		StateManager::ChangeState(new CreditState);
-	}
-
-	if (EventManager::KeyPressed(SDL_SCANCODE_G))
-	{
-		StateManager::ChangeState(new GameState);
-	}
-}
-
-void MenuState::Render()
-{
-
-	SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 128, 0, 128, 255);
-	SDL_RenderClear(Game::GetInstance().GetRenderer());
-
-
-}
-
-void MenuState::Exit()
-{
-	std::cout << "Exiting Menu Screen" << std::endl;
-
-}
-
-void MenuState::Resume()
-{
-	std::cout << "Resuming Menu Screen" << std::endl;
-}//End of MenuState
-
-//Start of CreditState
-
-void CreditState::Enter()
-{
-	std::cout << "Entering Credit State" << std::endl;
-	SDL_Rect rect;
-	SDL_FRect frect;
-	TextureManager::Load("assets/real/Credit.png", "creditTitle");
-	TextureManager::Load("assets/real/menu.png", "menuButton");
-	TextureManager::Load("assets/real/Quincy.png", "quincy");
-
-
-}
-
-void CreditState::Update(float deltaTime)
-{
-	if (EventManager::KeyPressed(SDL_SCANCODE_ESCAPE))
-	{
-		StateManager::ChangeState(new MenuState);
-	}
-}
-
-void CreditState::Render()
-{
-	SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 255, 192, 203, 255);
-	SDL_RenderClear(Game::GetInstance().GetRenderer());
-
-
-
-}
-
-void CreditState::Exit()
-{
-	std::cout << "Exiting Credit State" << std::endl;
-
-}
-
-void CreditState::Resume()
-{
-	std::cout << "Resuming Creit State" << std::endl;
-}
 
 void WinState::Enter()
 {
@@ -374,7 +327,6 @@ void WinState::Update(float deltaTime)
 {
 	if (EventManager::KeyPressed(SDL_SCANCODE_SPACE))
 	{
-		StateManager::ChangeState(new MenuState);
 	}
 }
 

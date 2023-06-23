@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
 #include <SDL.h>
+#include <string>
 class SpriteObject : public GameObject
 {
 public:
@@ -11,10 +12,26 @@ public:
 
     SDL_Rect* GetSourceTransform() { return &m_sourceTransform; }
    
-
+    void Update([[maybe_unused]] float deltaTime) override {}
+    void Render() override {};
 
 protected:
     SDL_Rect m_sourceTransform;
-
 };
 
+class Static_Image : public SpriteObject
+{
+public: 
+    Static_Image(const SDL_Rect source, const SDL_FRect dest, const char* textureKey)
+        :SpriteObject(source, dest),
+        textureKey{ textureKey }
+    {
+
+    }
+    virtual void Update([[maybe_unused]] float deltaTime) override {}
+    virtual void Render() override;
+
+private:
+    const char* textureKey;
+
+};

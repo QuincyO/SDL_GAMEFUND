@@ -1,5 +1,6 @@
 #pragma once
 #include "SpriteObject.h"
+#include "SoundManager.h"
 #include <string>
 #include <SDL.h>
 
@@ -18,8 +19,8 @@ protected:
     enum class ButtonState
     {
         STATE_UP,
-        STATE_OVER,
         STATE_DOWN,
+        STATE_OVER,
         COUNT
     };
 

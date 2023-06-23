@@ -33,11 +33,6 @@ void TitleState::Enter()
 	SoundManager::LoadSound("assets/spaceGame/lowFrequency_explosion_001.ogg", "HitSound2");
 
 
-	//Loading Textures and Music
-	TextureManager::Load("assets/Backgrounds/menuBackground.png", "TitleBackground");
-	TextureManager::Load("assets/Images/Buttons/playSheet.png", "PlayButton");
-	TextureManager::Load("assets/sprites/TitleSprite.png", "GameTitle");
-	SoundManager::LoadMusic("assets/audio/Mutara.mp3", "TitleMusic");
 
 
 	//Loading Background Images
@@ -59,10 +54,15 @@ void TitleState::Enter()
 	TextureManager::Load("assets/bigBooms/4.png", "Explosion4");
 	TextureManager::Load("assets/PNG/laserGreen.png", "EnemyLaser");
 	TextureManager::Load("assets/PNG/laserRed.png", "PlayerLaser");
+
+	//Loading Textures and Music SPECIFIC FOR TITLESCREEN
+	TextureManager::Load("assets/Backgrounds/menuBackground.png", "TitleBackground");
+	TextureManager::Load("assets/Images/Buttons/playSheet.png", "PlayButton");
+	TextureManager::Load("assets/sprites/TitleSprite.png", "GameTitle");
+	SoundManager::LoadMusic("assets/audio/Mutara.mp3", "TitleMusic");
+
 	SoundManager::PlayMusic("TitleMusic");
 	SoundManager::SetMusicVolume(60);
-
-
 
 	SDL_Rect source = { 0,0,4000,2000 };
 	SDL_FRect dest = { 0, 0, Game::GetInstance().kWidth,Game::GetInstance().kHeight };
@@ -221,19 +221,6 @@ void TitleState::Enter()
 
 	void GameState::Enter()
 	{
-		////Loading Music
-		//SoundManager::LoadMusic("assets/spaceGame/ObservingTheStar.ogg", "GameMusic");
-
-		////Loading Sounds
-		//SoundManager::LoadSound("assets/spaceGame/weaponfire6.wav", "ShootFX1");
-		//SoundManager::LoadSound("assets/spaceGame/laserSmall_000.ogg", "ShootFX2");
-		//SoundManager::LoadSound("assets/spaceGame/laserSmall_002.ogg", "ShootFX3");
-		//SoundManager::LoadSound("assets/spaceGame/lowFrequency_explosion_000.ogg", "HitSound1");
-		//SoundManager::LoadSound("assets/spaceGame/lowFrequency_explosion_001.ogg", "HitSound2");
-
-
-		
-
 		SDL_Rect source = { 0,0,0,0 };
 		SDL_FRect dest = { 0,0,896,1024 };
 

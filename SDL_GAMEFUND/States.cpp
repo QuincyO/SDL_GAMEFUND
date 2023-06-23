@@ -169,6 +169,25 @@ void TitleState::Enter()
 			}
 			if (it != EnemyBullets.end()) it++;
 		}
+
+		for (std::vector<Bullet*>::iterator it = PlayerBullets.begin(); it != PlayerBullets.end();)
+		{
+			for (std::vector<Ship*>::iterator enemyShip = EnemyShips.begin(); enemyShip != EnemyShips.end();)
+			{
+				Bullet tempBullet = (*it);
+				Ship tempShip = (*enemyShip);
+				if (SDL_HasIntersectionF(tempBullet.GetDestinationTransform(), tempShip.GetDestinationTransform()))
+				{
+					StateManager::ChangeState(new WinState);
+					if (StateManager::IsStateChaning())
+					{
+						return;
+					}
+				}
+				if (enemyShip != EnemyShips.end()) enemyShip++;
+			}
+			if (it != PlayerBullets.end())it++;
+		}
 	}
 
 	void GameState::SpawnShip()

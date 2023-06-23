@@ -45,6 +45,18 @@ public:
     {
 
     }
+    Ship(Ship* other)
+        :SpriteObject(other->m_sourceTransform, other->m_destinationTransform, other->textureKey),
+        moveSpeed{ other->moveSpeed },
+        shooting{ other->shooting },
+        fireDelay{ other->fireDelay },
+        m_state{ other->m_state },
+        m_ShipType{ other->m_ShipType },
+        shootTimer{ other->shootTimer }
+    {
+
+    }
+
 
     ~Ship() {
 

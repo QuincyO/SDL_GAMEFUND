@@ -54,12 +54,19 @@ class GameState : public State
 private:
 	static const int kPlayerSpeed = 500;
 
-	float timer;
+	float enemySpawnTimer = 0;
+	float enemySpawnDelay = 1.5f;
 	Ship* playerShip;
 	std::vector<GameObject*> m_backgroundObjects;
 	std::vector<Ship*> EnemyShips;
 	std::vector<Bullet*> EnemyBullets;
 	std::vector<Bullet*> PlayerBullets;
+
+	void DetectCollision();
+
+	void SpawnShip();
+	bool CanSpawn();
+
 
 public:
 	Mix_Music* gameMusic;

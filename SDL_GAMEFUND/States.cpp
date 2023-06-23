@@ -12,6 +12,7 @@
 #include "SoundManager.h"
 #include "PlayButton.h"
 #include "Ship.h"
+#include "Bullet.h"
 
 
 
@@ -37,6 +38,27 @@ void TitleState::Enter()
 	TextureManager::Load("assets/Images/Buttons/playSheet.png", "PlayButton");
 	TextureManager::Load("assets/sprites/TitleSprite.png", "GameTitle");
 	SoundManager::LoadMusic("assets/audio/Mutara.mp3", "TitleMusic");
+
+
+	//Loading Background Images
+			//3 Slowest 20px/s
+	TextureManager::Load("assets/Backgrounds/nebulawetstars.png", "BackgroundLayer3");
+	//2 Medium 60px/s
+	TextureManager::Load("assets/Backgrounds/nebuladrystars.png", "BackgroundLayer2");
+	//1 Fastest 150px/s 
+	TextureManager::Load("assets/Backgrounds/nebula2.png", "BackgroundLayer1"); //Animated
+
+	//Loading Player + EnemyPlayer Images
+	TextureManager::Load("assets/PNG/playerShip1_red.png", "Player");
+	TextureManager::Load("assets/PNG/enemyShip.png", "Enemy");
+
+	//Loading Explosions and Bullets
+	TextureManager::Load("assets/bigBooms/1.png", "Explosion1");
+	TextureManager::Load("assets/bigBooms/2.png", "Explosion2");
+	TextureManager::Load("assets/bigBooms/3.png", "Explosion3");
+	TextureManager::Load("assets/bigBooms/4.png", "Explosion4");
+	TextureManager::Load("assets/PNG/laserGreen.png", "EnemyLaser");
+	TextureManager::Load("assets/PNG/laserRed.png", "PlayerLaser");
 	SoundManager::PlayMusic("TitleMusic");
 	SoundManager::SetMusicVolume(60);
 
@@ -127,6 +149,57 @@ void TitleState::Enter()
 
 //Start of GameScreen
 
+	void GameState::DetectCollision()
+	{
+		int explosionType = rand() % 4;
+		int explosionSoundType = rand() % 2;
+
+		for (std::vector<Bullet*>::iterator it = EnemyBullets.begin(); it != EnemyBullets.end();)
+		{
+			Bullet tempB = (*it);
+
+			if (SDL_HasIntersectionF(playerShip->GetDestinationTransform(), tempB.GetDestinationTransform()))
+			{
+				StateManager::ChangeState(new LoseState);
+				if (StateManager::IsStateChaning())
+				{
+					return;
+				}
+
+			}
+			if (it != EnemyBullets.end()) it++;
+		}
+	}
+
+	void GameState::SpawnShip()
+	{
+		SDL_Rect source = { 0,0,0,0 };
+		SDL_FRect dest = { 0,0,0,0 };
+		const char* textureKey = "Enemy";
+		source.w = 98;
+		source.h = 50;
+
+		dest.w = source.w * .75f;
+		dest.h = source.h * .75f;
+
+		dest.x = rand() % Game::kWidth - 100;
+		dest.y = rand() %150 *-1;
+
+		EnemyShips.push_back(new Ship(source, dest, textureKey, ShipType::ENEMY, 80, 1.5));
+		enemySpawnTimer = enemySpawnDelay;
+
+	}
+
+	bool GameState::CanSpawn()
+	{
+		if (enemySpawnTimer <= 0)
+		{
+			enemySpawnTimer = enemySpawnDelay;
+			return true;
+		}
+		else return false;
+	}
+
 	void GameState::Enter()
 	{
 		////Loading Music
@@ -140,25 +213,7 @@ void TitleState::Enter()
 		//SoundManager::LoadSound("assets/spaceGame/lowFrequency_explosion_001.ogg", "HitSound2");
 
 
-		//Loading Background Images
-			//3 Slowest 20px/s
-		TextureManager::Load("assets/Backgrounds/nebulawetstars.png", "BackgroundLayer3");
-		//2 Medium 60px/s
-		TextureManager::Load("assets/Backgrounds/nebuladrystars.png", "BackgroundLayer2");
-		//1 Fastest 150px/s 
-		TextureManager::Load("assets/Backgrounds/nebula2.png", "BackgroundLayer1"); //Animated
-
-		//Loading Player + EnemyPlayer Images
-		TextureManager::Load("assets/PNG/playerShip1_red.png", "Player");
-		TextureManager::Load("assets/PNG/enemyShip.png", "Enemy");
-
-		//Loading Explosions and Bullets
-		TextureManager::Load("assets/bigBooms/1.png", "Explosion1");
-		TextureManager::Load("assets/bigBooms/2.png", "Explosion2");
-		TextureManager::Load("assets/bigBooms/3.png", "Explosion3");
-		TextureManager::Load("assets/bigBooms/4.png", "Explosion4");
-		TextureManager::Load("assets/PNG/laserGreen.png", "EnemyLaser");
-		TextureManager::Load("assets/PNG/laserRed.png", "PlayerLaser");
+		
 
 		SDL_Rect source = { 0,0,0,0 };
 		SDL_FRect dest = { 0,0,896,1024 };
@@ -198,15 +253,35 @@ void TitleState::Enter()
 
 void GameState::Update(float deltaTime)
 {
+
 	for (auto objects : m_backgroundObjects)
 	{
 		objects->Update(deltaTime);
 	}
-
+	if (CanSpawn())
+	{
+		SpawnShip();
+	}
+	for (auto ships : EnemyShips)
+	{
+		ships->Update(deltaTime,EnemyBullets);
+	}
 	playerShip->Update(deltaTime, PlayerBullets);
 	
+	for (auto bullets : PlayerBullets)
+	{
+		bullets->Update(deltaTime);
+	}
 
-	timer += deltaTime;
+
+	for (auto bullets : EnemyBullets)
+	{
+		bullets->Update(deltaTime);
+	}
+
+	DetectCollision();
+
+	enemySpawnTimer -= deltaTime;
 }
 
 void GameState::Render()
@@ -219,6 +294,20 @@ void GameState::Render()
 	{
 		objects->Render();
 	}
+
+	for (auto bullets : PlayerBullets)
+		{
+		bullets->Render();
+		}
+	for (auto bullets : EnemyBullets)
+	{
+		bullets->Render();
+	}
+	for (auto ships : EnemyShips)
+	{
+		ships->Render();
+	}
+
 	playerShip->Render();
 
 
@@ -241,6 +330,21 @@ void GameState::Exit()
 		bullets = nullptr;
 	}
 	PlayerBullets.clear();
+
+	for (auto& bullets : EnemyBullets)
+	{
+		delete bullets;
+		bullets = nullptr;
+	}
+	EnemyBullets.clear();
+
+	for (auto ships : EnemyShips)
+	{
+		delete ships;
+		ships = nullptr;
+	}
+	EnemyShips.clear();
+
 	delete playerShip;
 	playerShip = nullptr;
 }

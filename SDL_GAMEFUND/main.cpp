@@ -6,6 +6,7 @@
 
 int main(int argc, char* argv[])
 {
+	srand(time(NULL));
 	SDL_SetMainReady();
 	Game& myGame = Game::GetInstance();
 	int result = myGame.Init("Labs_OrtaQuincy");

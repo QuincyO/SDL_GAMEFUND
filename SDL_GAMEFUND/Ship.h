@@ -53,9 +53,9 @@ public:
 
     virtual void Render()override;
 
-    virtual void Update(float deltaTime, std::vector<Bullet*> containerOfBullets);
+    virtual void Update(float deltaTime, std::vector<Bullet*>& containerOfBullets);
 
-    bool canShoot() { return shooting; }
+    bool canShoot() { if (shootTimer <= 0.0f && m_destinationTransform.y>= 0) return true; else return false; }
 
 
 

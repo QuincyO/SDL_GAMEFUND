@@ -23,7 +23,7 @@ public:
 	virtual void Update(float deltaTime) = 0;
 	virtual void Render() = 0;
 	virtual void Exit() = 0;
-	virtual void Pause() {};
+	virtual void Pause() {}
 	virtual void Resume() {}
 
 	std::map<std::string, GameObject*> m_objects;

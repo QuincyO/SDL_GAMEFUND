@@ -9,6 +9,7 @@
 #include "EventManager.h"
 #include "PlatformPlayer.h"
 #include "CollisionManager.h"
+#include "PlayButton.h"
 
 
 
@@ -275,7 +276,17 @@ void MenuState::Enter()
 	TextureManager::Load("assets/real/Credits.png", "credit");
 	TextureManager::Load("assets/real/Game.png", "game");
 	TextureManager::Load("assets/real/Name.png", "name");
+	TextureManager::Load("assets/Images/Buttons/play.png", "PlayButton");
 
+	int buttonWidth = 400;
+	int buttonHeight = 100;
+
+	float buttonX = Game::GetInstance().kWidth / 2.0f - buttonWidth/2.0f;
+	float buttonY = Game::GetInstance().kHeight / 2.0f - buttonHeight / 2.0f;
+
+	SDL_Rect source = { 0,0,buttonWidth,buttonHeight };
+	SDL_FRect dest = { buttonX,buttonY,(float)buttonWidth,(float)buttonHeight };
+	m_objects.emplace("PlayButton", new PlayButton(source, dest, "PlayButton"));
 
 
 
@@ -288,10 +299,13 @@ void MenuState::Update(float deltaTime)
 	if (EventManager::KeyPressed(SDL_SCANCODE_C)) {
 		StateManager::ChangeState(new CreditState);
 	}
-
-	if (EventManager::KeyPressed(SDL_SCANCODE_G))
+	for (auto object : m_objects)
 	{
-		StateManager::ChangeState(new GameState);
+		object.second->Update(deltaTime);
+		if (StateManager::isStateChanging())
+		{
+			break;
+		}
 	}
 }
 
@@ -301,12 +315,21 @@ void MenuState::Render()
 	SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 128, 0, 128, 255);
 	SDL_RenderClear(Game::GetInstance().GetRenderer());
 
-
+	m_objects["PlayButton"]->Render();
 }
 
 void MenuState::Exit()
 {
 	std::cout << "Exiting Menu Screen" << std::endl;
+
+	TextureManager::Unload("PlayButton");
+
+	for (auto objects : m_objects)
+	{
+		delete objects.second;
+		objects.second = nullptr;
+	}
+	m_objects.clear();
 
 }
 

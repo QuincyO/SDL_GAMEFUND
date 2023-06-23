@@ -54,6 +54,7 @@ private:
 
 	float timer;
 
+	std::vector<GameObject*> m_backgroundObjects;
 
 public:
 	Mix_Music* gameMusic;

@@ -22,16 +22,18 @@ protected:
 class Static_Image : public SpriteObject
 {
 public: 
-    Static_Image(const SDL_Rect source, const SDL_FRect dest, const char* textureKey)
+    Static_Image(const SDL_Rect source, const SDL_FRect dest, const char* textureKey,float scrollSpeed = 0)
         :SpriteObject(source, dest),
-        textureKey{ textureKey }
+        textureKey{ textureKey },
+        scrollSpeed{scrollSpeed}
     {
 
     }
-    virtual void Update([[maybe_unused]] float deltaTime) override {}
+    virtual void Update([[maybe_unused]] float deltaTime) override;
     virtual void Render() override;
 
 private:
     const char* textureKey;
+    float scrollSpeed;
 
 };

@@ -22,3 +22,23 @@ protected:
 	float m_frameRate;
 };
 
+class Animated_Image : public AnimatedSprite
+{
+public:
+	Animated_Image(SDL_Rect source, SDL_FRect dest, const char* textureKey, float scrollSpeed = 0, int frameCount = 0)
+		:AnimatedSprite(source, dest),
+		textureKey{ textureKey },
+		scrollSpeed{ scrollSpeed }
+	{
+		m_maxSprites = frameCount;
+	}
+	virtual void Update(float deltaTime) override;
+	virtual void Render() override;
+	void NextFrame();
+	void SetFrame(int frame);
+
+
+private:
+	const char* textureKey;
+	float scrollSpeed;
+};

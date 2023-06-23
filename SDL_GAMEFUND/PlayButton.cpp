@@ -43,5 +43,6 @@ void PlayButton::Update(float deltaTime)
 
 void PlayButton::Execute()
 {
+	EventManager::SetCursor(SDL_SYSTEM_CURSOR_ARROW);
 	StateManager::ChangeState(new GameState());
 }

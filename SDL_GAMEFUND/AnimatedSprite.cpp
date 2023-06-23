@@ -1,4 +1,5 @@
 #include "AnimatedSprite.h"
+#include "Game.h"
 
 
 
@@ -44,4 +45,36 @@ void AnimatedSprite::Update(float deltaTime)
     }
 
     m_sourceTransform.x = m_sourceTransform.w * m_currentSpriteIndex; //this line updates the x pos to go over to the next one
+}
+
+
+
+void Animated_Image::Update(float deltaTime)
+{
+    m_destinationTransform.y += scrollSpeed * deltaTime;
+    if (m_destinationTransform.y >= Game::GetInstance().kHeight)
+    {
+        m_destinationTransform.y = -m_destinationTransform.h;
+        NextFrame();
+    }
+}
+
+void Animated_Image::Render()
+{
+    SDL_RenderCopyExF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture(textureKey), &m_sourceTransform, &m_destinationTransform, 0, 0, SDL_FLIP_NONE);
+}
+
+void Animated_Image::NextFrame()
+{
+    SetFrame(m_currentSpriteIndex + 1);
+}
+
+void Animated_Image::SetFrame(int frame)
+{
+    m_currentSpriteIndex = frame % m_maxSprites;
+    int row = frame / 8;
+    int col = frame % 8;
+
+    m_sourceTransform.y = row * m_sourceTransform.h;
+    m_sourceTransform.x = col * m_sourceTransform.w;
 }

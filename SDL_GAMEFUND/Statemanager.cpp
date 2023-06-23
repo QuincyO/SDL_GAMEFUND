@@ -3,9 +3,11 @@
 #include "state.h"
 
 std::vector<State*> StateManager::s_states;
+bool StateManager::s_stateChange = false;
 
 void StateManager::Update(float deltaTime)
 {
+	s_stateChange = false;
 	if (!s_states.empty())
 	{
 		//s_states.back() represents the current state, by pointer
@@ -29,6 +31,7 @@ void StateManager::PushState(State* pState)
 
 void StateManager::PopState()
 {
+	s_stateChange = true;
 	if (s_states.size() <= 1)
 	{
 		return;
@@ -47,6 +50,7 @@ void StateManager::PopState()
 
 void StateManager::ChangeState(State* pState)
 {
+	s_stateChange = true;
 	if (!s_states.empty())
 	{
 		s_states.back()->Exit();

@@ -13,8 +13,8 @@ private:
 
 	Game();
 public:
-	static const int kWidth = 1280;
-	static const int kHeight = 720;
+	static const int kWidth = 896;
+	static const int kHeight = 1024;
 	static Game& GetInstance();
 
 	int Init(const char* Title);

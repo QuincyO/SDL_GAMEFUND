@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Assignment1">
+      <UniqueIdentifier>{a1279c7d-dc3a-4c82-a1b5-dec4dc09d8b4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -24,9 +27,6 @@
     <ClCompile Include="Statemanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="States.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GameObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -36,16 +36,10 @@
     <ClCompile Include="CollisionManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AnimatedSprite.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TextureManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TileObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SpriteObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TiledLevel.cpp">
@@ -64,7 +58,16 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PlayButton.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Assignment1</Filter>
+    </ClCompile>
+    <ClCompile Include="States.cpp">
+      <Filter>Assignment1</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimatedSprite.cpp">
+      <Filter>Assignment1</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteObject.cpp">
+      <Filter>Assignment1</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -86,16 +89,10 @@
     <ClInclude Include="CollisionManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AnimatedSprite.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TextureManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TileObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SpriteObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TiledLevel.h">
@@ -115,6 +112,12 @@
     </ClInclude>
     <ClInclude Include="PlayButton.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteObject.h">
+      <Filter>Assignment1</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimatedSprite.h">
+      <Filter>Assignment1</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

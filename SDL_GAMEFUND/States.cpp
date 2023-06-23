@@ -26,6 +26,7 @@ void TitleState::Enter()
 	TextureManager::Load("assets/sprites/TitleSprite.png", "GameTitle");
 	SoundManager::LoadMusic("assets/audio/Mutara.mp3", "TitleMusic");
 	SoundManager::PlayMusic("TitleMusic");
+	SoundManager::SetMusicVolume(60);
 
 
 
@@ -35,12 +36,15 @@ void TitleState::Enter()
 	m_objects.emplace("MenuBackground", new Static_Image(source, dest, "TitleBackground"));
 
 	source = { 0,0,192,128 };
-	dest = { Game::GetInstance().kWidth * .5f - source.w / 2,Game::GetInstance().kHeight * .75f,(float)source.w,(float)source.h };
+	dest = { Game::GetInstance().kWidth * .5f - source.w / 2,Game::GetInstance().kHeight * .8f,(float)source.w,(float)source.h };
 
 	m_objects.emplace("PlayButton", new PlayButton(source, dest, "PlayButton"));
 
 	source = { 0,0,1184,108 };
-	dest = {Game::GetInstance().kWidth * .5f - source.w / 2, Game::GetInstance().kHeight * .15f, (float)source.w, (float)source.h};
+	dest.w = (float)source.w / 2;
+	dest.h = (float)source.h / 2;
+	dest.x = Game::GetInstance().kWidth * .5f - dest.w / 2;
+	dest.y = Game::GetInstance().kHeight * .15f;
 
 	m_objects.emplace("GameTitle", new Static_Image(source, dest, "GameTitle"));
 
@@ -61,6 +65,10 @@ void TitleState::Enter()
 		for (auto& object : m_objects)
 		{
 			object.second->Update(deltaTime);
+			if (StateManager::IsStateChaning())
+			{
+				return;
+			}
 		}
 		if (timer > 3.1f)
 		{
@@ -86,6 +94,9 @@ void TitleState::Enter()
 	void TitleState::Exit()
 	{
 		std::cout << "Exiting Title Screen" << std::endl;
+
+		SoundManager::StopMusic();
+
 		TextureManager::Unload("PlayButton");
 		TextureManager::Unload("TitleBackground");
 		SoundManager::UnloadMusic("TitleMusic");
@@ -104,136 +115,84 @@ void TitleState::Enter()
 
 //Start of GameScreen
 
-void GameState::Enter()
-{
+	void GameState::Enter()
+	{
+		//Loading Music
+		SoundManager::LoadMusic("assets/spaceGame/ObservingTheStar.ogg", "GameMusic");
 
-	TextureManager::Load("assets/Images/Tiles.png", "tiles"); 
-	TextureManager::Load("assets/Images/Player.png", "player");
-
-	//TextureManager::Load("assets/real/background2.png", "gameBackground");
-	//TextureManager::Load("assets/real/wasd.png", "wasd");
-	////TextureManager::Load("assets/platformer/PNG/Player/p1_walk/spritesheet.png", "player");
-	//TextureManager::Load("assets/platformer/PNG/Player/p2_stand.png", "blueGuy");
-
-
-	m_objects.emplace("level", new TiledLevel(24, 32, 32, 32, "assets/Data/Tiledata.txt", "assets/Data/Level1.txt", "tiles"));
-	m_objects.emplace("player", new PlatformPlayer({ 0,0,128,128 }, { 288,480,64,64 }));
+		//Loading Sounds
+		SoundManager::LoadSound("assets/spaceGame/weaponfire6.wav", "ShootFX1");
+		SoundManager::LoadSound("assets/spaceGame/laserSmall_000.ogg", "ShootFX2");
+		SoundManager::LoadSound("assets/spaceGame/laserSmall_002.ogg", "ShootFX3");
+		SoundManager::LoadSound("assets/spaceGame/lowFrequency_explosion_000.ogg", "HitSound1");
+		SoundManager::LoadSound("assets/spaceGame/lowFrequency_explosion_001.ogg", "HitSound2");
 
 
-	//Mix_PlayMusic(gameMusic, -1);
+		//Loading Background Images
+			//3 Slowest 20px/s
+		TextureManager::Load("assets/Backgrounds/nebulawetstars.png", "BackgroundLayer3");
+		//2 Medium 60px/s
+		TextureManager::Load("assets/Backgrounds/nebuladrystars.png", "BackgroundLayer2");
+		//1 Fastest 150px/s 
+		TextureManager::Load("assets/Backgrounds/nebula2.png", "BackgroundLayer1"); //Animated
+
+		//Loading Player + EnemyPlayer Images
+		TextureManager::Load("assets/PNG/playerShip1_red.png", "Player");
+		TextureManager::Load("assets/PNG/enemyShip.png", "Enemy");
+
+		//Loading Explosions and Bullets
+		TextureManager::Load("assets/bigBooms/1.png", "Explosion1");
+		TextureManager::Load("assets/bigBooms/2.png", "Explosion2");
+		TextureManager::Load("assets/bigBooms/3.png", "Explosion3");
+		TextureManager::Load("assets/bigBooms/4.png", "Explosion4");
+		TextureManager::Load("assets/PNG/laserGreen.png", "EnemyLaser");
+		TextureManager::Load("assets/PNG/laserRed.png", "PlayerLaser");
+
+		SDL_Rect source = { 0,0,0,0 };
+		SDL_FRect dest = { 0,0,896,1024 };
+
+		SDL_QueryTexture(TextureManager::GetTexture("BackgroundLayer3"), NULL, NULL, &source.w, &source.h);
+		dest.w = 896;
+		dest.h = 1024;
+		m_backgroundObjects.push_back( new Static_Image(source, dest, "BackgroundLayer3", 20));
+		dest.y = -dest.h;
+		m_backgroundObjects.push_back( new Static_Image(source, dest, "BackgroundLayer3", 20));
+
+		SDL_QueryTexture(TextureManager::GetTexture("BackgroundLayer2"), NULL, NULL, &source.w, &source.h);
+		dest.y = 500;
+		m_backgroundObjects.push_back( new Static_Image(source, dest, "BackgroundLayer2", 60));
+		dest.y = 500 - dest.h;
+		m_backgroundObjects.push_back( new Static_Image(source, dest, "BackgroundLayer2", 60));
+
+		SDL_QueryTexture(TextureManager::GetTexture("BackgroundLayer1"), NULL, NULL, &source.w, &source.h);
+		source.w = 1060;
+		dest.y = -dest.h;
+		m_backgroundObjects.push_back( new Animated_Image(source, dest, "BackgroundLayer1", 150,2));
 
 
-	
+
 
 }
 
 void GameState::Update(float deltaTime)
 {
-
-	if (EventManager::KeyPressed(SDL_SCANCODE_X))
+	for (auto objects : m_backgroundObjects)
 	{
-		StateManager::ChangeState(new TitleState());
+		objects->Update(deltaTime);
 	}
-
-	else if (EventManager::KeyPressed(SDL_SCANCODE_P))
-	{
-		StateManager::PushState(new PauseState());
-	}
-	else
-	{
-
-	
-		for (auto objects : m_objects)
-		{
-			objects.second->Update(deltaTime);
-		}
-
-
-		for (unsigned int i = 0; i < static_cast<TiledLevel*>(m_objects["level"])->GetObstacles().size(); i++)
-		{
-			SDL_FRect* obstacleColliderTransform = static_cast<TiledLevel*>(m_objects["level"])->GetObstacles()[i]->GetDestinationTransform();
-
-			float obstacleLeft = obstacleColliderTransform->x;
-			float obstacleRight = obstacleColliderTransform->x + obstacleColliderTransform->w;
-			float obstacleTop = obstacleColliderTransform->y;
-			float obstacleBottom = obstacleColliderTransform->y + obstacleColliderTransform->h;
-
-			SDL_FRect* PlayerColliderTransform = m_objects["player"]->GetDestinationTransform();
-
-			float playerLeft = PlayerColliderTransform->x;
-			float playerRight = PlayerColliderTransform->x + PlayerColliderTransform->w;
-			float playerTop = PlayerColliderTransform->y;
-			float playerBottom = PlayerColliderTransform->y + PlayerColliderTransform->h;
-
-
-			//Checking horizontal overlap by comparing right vs left andleft vs right
-			bool xOverLap = playerLeft<obstacleRight&& playerRight>obstacleLeft;
-
-			//Checking Vertical overlap by comparing top vs bottom and bottom vs top
-			bool yOverLap = playerTop <obstacleBottom&& playerBottom>obstacleTop;
-
-			//Used to determine which direction the colliusion came from
-			float bottomCollision = obstacleBottom - PlayerColliderTransform->y;
-			float topCollision = playerBottom - obstacleColliderTransform->y;
-			float leftCollision = playerRight - obstacleColliderTransform->x;
-			float rightCollision = obstacleRight - PlayerColliderTransform->x;
-
-			if (xOverLap && yOverLap)
-			{
-				PlatformPlayer* pPlayer = static_cast<PlatformPlayer*> (m_objects["player"]);
-
-				//Top Collision
-				if (topCollision < bottomCollision && topCollision < leftCollision && topCollision < rightCollision)
-				{
-					pPlayer->StopY();
-					pPlayer->SetY(PlayerColliderTransform->y - topCollision);
-					pPlayer->SetGrounded(true);
-				}
-				//Bottom Collision
-				if (bottomCollision < topCollision && bottomCollision < leftCollision && bottomCollision < rightCollision)
-				{
-					pPlayer->StopY();
-					pPlayer->SetY(PlayerColliderTransform->y + bottomCollision);
-				}
-				//Left Collision
-				if (leftCollision < rightCollision && leftCollision < topCollision && leftCollision < bottomCollision)
-				{
-					pPlayer->StopX();
-					pPlayer->SetX(PlayerColliderTransform->x - leftCollision);
-				}
-				//Right Collision
-				if ((rightCollision < leftCollision) && (rightCollision < bottomCollision) && (rightCollision < topCollision))
-				{
-					pPlayer->StopX();
-					pPlayer->SetX(PlayerColliderTransform->x + rightCollision);
-				}
-
-			}
-		}
-	}
-
-
-	if (EventManager::KeyPressed(SDL_SCANCODE_0))
-	{
-		StateManager::ChangeState(new WinState);
-
-	}
-
 
 	timer += deltaTime;
-		
-	
 }
 
 void GameState::Render()
 {
 	//std::cout << "Rendering Gamestate..." << std::endl;
-	SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 0, 0, 255, 255);
+	SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 0, 0, 0, 0);
 	SDL_RenderClear(Game::GetInstance().GetRenderer());
 
-	for (auto objects : m_objects)
+	for (auto objects : m_backgroundObjects)
 	{
-		objects.second->Render();
+		objects->Render();
 	}
 
 }
@@ -241,15 +200,12 @@ void GameState::Render()
 void GameState::Exit()
 {
 	std::cout<<"Exiting GameState.." << std::endl;
-	TextureManager::Unload("tiles");
 
-	for (auto objects : m_objects)
+	for (auto objects : m_backgroundObjects)
 	{
-		delete objects.second;
+		delete objects;
 	}
-	m_objects.clear();
-	Mix_FreeMusic(gameMusic);
-	gameMusic = nullptr;
+	m_backgroundObjects.clear();
 }
 
 void GameState::Resume()
@@ -308,8 +264,6 @@ void PauseState::Exit()
 }
 
 
-
-
 void WinState::Enter()
 {
 	std::cout << "Enteriing Win State" << std::endl;
@@ -317,10 +271,6 @@ void WinState::Enter()
 	SDL_FRect frect;
 	TextureManager::Load("assets/real/Win.png", "winTitle");
 	TextureManager::Load("assets/real/SpaceMenu.png", "restartButton");
-
-
-
-	
 }
 
 void WinState::Update(float deltaTime)

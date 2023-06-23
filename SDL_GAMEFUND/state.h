@@ -11,6 +11,8 @@ class SpriteObject;
 class GameObject;
 class AnimatedSprite;
 class TiledLevel;
+class Bullet;
+class Ship;
 
 class State
 {
@@ -53,8 +55,11 @@ private:
 	static const int kPlayerSpeed = 500;
 
 	float timer;
-
+	Ship* playerShip;
 	std::vector<GameObject*> m_backgroundObjects;
+	std::vector<Ship*> EnemyShips;
+	std::vector<Bullet*> EnemyBullets;
+	std::vector<Bullet*> PlayerBullets;
 
 public:
 	Mix_Music* gameMusic;

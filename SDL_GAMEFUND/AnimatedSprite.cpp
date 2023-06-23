@@ -3,9 +3,9 @@
 
 
 
-AnimatedSprite::AnimatedSprite(SDL_Rect source, SDL_FRect dest)
-    :SpriteObject(source,dest)
-    , m_currentSpriteIndex(0),
+AnimatedSprite::AnimatedSprite(SDL_Rect source, SDL_FRect dest,const char* texturekey)
+    :SpriteObject(source,dest, texturekey)
+    ,m_currentSpriteIndex(0),
     m_maxSprites{ 0 },
     m_startingSpriteIndex{ 0 },
     m_currentTime{ 0},

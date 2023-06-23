@@ -11,6 +11,7 @@
 #include "CollisionManager.h"
 #include "SoundManager.h"
 #include "PlayButton.h"
+#include "Ship.h"
 
 
 
@@ -19,6 +20,17 @@
 void TitleState::Enter()
 {
 	std::cout << "Entering TitleState..." << std::endl;
+
+	//Loading Music
+	SoundManager::LoadMusic("assets/spaceGame/ObservingTheStar.ogg", "GameMusic");
+
+	//Loading Sounds
+	SoundManager::LoadSound("assets/spaceGame/weaponfire6.wav", "ShootFX1");
+	SoundManager::LoadSound("assets/spaceGame/laserSmall_000.ogg", "ShootFX2");
+	SoundManager::LoadSound("assets/spaceGame/laserSmall_002.ogg", "ShootFX3");
+	SoundManager::LoadSound("assets/spaceGame/lowFrequency_explosion_000.ogg", "HitSound1");
+	SoundManager::LoadSound("assets/spaceGame/lowFrequency_explosion_001.ogg", "HitSound2");
+
 
 	//Loading Textures and Music
 	TextureManager::Load("assets/Backgrounds/menuBackground.png", "TitleBackground");
@@ -117,15 +129,15 @@ void TitleState::Enter()
 
 	void GameState::Enter()
 	{
-		//Loading Music
-		SoundManager::LoadMusic("assets/spaceGame/ObservingTheStar.ogg", "GameMusic");
+		////Loading Music
+		//SoundManager::LoadMusic("assets/spaceGame/ObservingTheStar.ogg", "GameMusic");
 
-		//Loading Sounds
-		SoundManager::LoadSound("assets/spaceGame/weaponfire6.wav", "ShootFX1");
-		SoundManager::LoadSound("assets/spaceGame/laserSmall_000.ogg", "ShootFX2");
-		SoundManager::LoadSound("assets/spaceGame/laserSmall_002.ogg", "ShootFX3");
-		SoundManager::LoadSound("assets/spaceGame/lowFrequency_explosion_000.ogg", "HitSound1");
-		SoundManager::LoadSound("assets/spaceGame/lowFrequency_explosion_001.ogg", "HitSound2");
+		////Loading Sounds
+		//SoundManager::LoadSound("assets/spaceGame/weaponfire6.wav", "ShootFX1");
+		//SoundManager::LoadSound("assets/spaceGame/laserSmall_000.ogg", "ShootFX2");
+		//SoundManager::LoadSound("assets/spaceGame/laserSmall_002.ogg", "ShootFX3");
+		//SoundManager::LoadSound("assets/spaceGame/lowFrequency_explosion_000.ogg", "HitSound1");
+		//SoundManager::LoadSound("assets/spaceGame/lowFrequency_explosion_001.ogg", "HitSound2");
 
 
 		//Loading Background Images
@@ -151,6 +163,8 @@ void TitleState::Enter()
 		SDL_Rect source = { 0,0,0,0 };
 		SDL_FRect dest = { 0,0,896,1024 };
 
+
+		//--------------------------------------BACKGROUND--------------------------------------------------//
 		SDL_QueryTexture(TextureManager::GetTexture("BackgroundLayer3"), NULL, NULL, &source.w, &source.h);
 		dest.w = 896;
 		dest.h = 1024;
@@ -169,7 +183,15 @@ void TitleState::Enter()
 		dest.y = -dest.h;
 		m_backgroundObjects.push_back( new Animated_Image(source, dest, "BackgroundLayer1", 150,2));
 
+		//-------------------------------------------PLAYER-&-EXPLOSIONS---------------------------------------//
+		SDL_QueryTexture(TextureManager::GetTexture("Player"), NULL, NULL, &source.w, &source.h);
+		dest.w = source.w * .75f;
+		dest.h = source.h * .75f;
+		dest.x = Game::kWidth/2 - dest.w/2;
+		dest.y = Game::kHeight * .75f;
+		playerShip = new Ship(source, dest, "Player", ShipType::FRIEND);
 
+		
 
 
 }
@@ -180,6 +202,9 @@ void GameState::Update(float deltaTime)
 	{
 		objects->Update(deltaTime);
 	}
+
+	playerShip->Update(deltaTime, PlayerBullets);
+	
 
 	timer += deltaTime;
 }
@@ -194,6 +219,9 @@ void GameState::Render()
 	{
 		objects->Render();
 	}
+	playerShip->Render();
+
+
 
 }
 
@@ -206,6 +234,15 @@ void GameState::Exit()
 		delete objects;
 	}
 	m_backgroundObjects.clear();
+
+	for (auto& bullets : PlayerBullets)
+	{
+		delete bullets;
+		bullets = nullptr;
+	}
+	PlayerBullets.clear();
+	delete playerShip;
+	playerShip = nullptr;
 }
 
 void GameState::Resume()

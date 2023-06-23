@@ -1,0 +1,66 @@
+#pragma once
+#include "SpriteObject.h"
+#include <vector>
+
+class Bullet;
+
+    enum class ShipType
+    {
+        FRIEND,
+        ENEMY
+    };
+class Ship :
+    public SpriteObject
+{
+private:
+    float moveSpeed;
+    bool shooting;
+    float fireDelay;
+
+
+
+    enum class ShipState
+    {
+        STATE_NORM,
+        STATE_LEFT,
+        STATE_RIGHT
+    };
+
+    float shootTimer;
+    ShipState m_state;
+
+    ShipType m_ShipType;
+
+
+public:
+    Ship(SDL_Rect source, SDL_FRect dest, const char* textureKey, ShipType shiptype, float moveSpeedPx = 150, float fireDelay = 0.3f)
+        :SpriteObject(source, dest, textureKey),
+        moveSpeed{ moveSpeedPx },
+        fireDelay{ fireDelay },
+        m_state{ ShipState::STATE_NORM },
+        m_ShipType{ shiptype },
+        shooting{ false },
+        shootTimer{ 0 }
+
+    {
+
+    }
+
+    ~Ship() {
+
+    }
+    void Shoot(std::vector<Bullet*>& container);
+
+    virtual void Render()override;
+
+    virtual void Update(float deltaTime, std::vector<Bullet*> containerOfBullets);
+
+    bool canShoot() { return shooting; }
+
+
+
+
+
+
+};
+

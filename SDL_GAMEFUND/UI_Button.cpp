@@ -4,15 +4,14 @@
 #include "EventManager.h"
 
 UI_Button::UI_Button(SDL_Rect source, SDL_FRect destination, const char* textureKey)
-	:SpriteObject(source, destination)
-	,m_textureKey(textureKey)
+	:SpriteObject(source, destination,textureKey)
 	,m_state(ButtonState::STATE_UP)
 {}
 
 void UI_Button::Render()
 {
 	m_sourceTransform.x = m_sourceTransform.w * (int)m_state;
-	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture(m_textureKey), &m_sourceTransform, &m_destinationTransform);
+	SDL_RenderCopyF(Game::GetInstance().GetRenderer(), TextureManager::GetTexture(textureKey), &m_sourceTransform, &m_destinationTransform);
 }
 
 void UI_Button::Update(float deltaTime)

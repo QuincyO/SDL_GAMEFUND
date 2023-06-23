@@ -5,8 +5,9 @@
 class SpriteObject : public GameObject
 {
 public:
-    SpriteObject(const SDL_Rect source, const SDL_FRect dest)
+    SpriteObject(const SDL_Rect source, const SDL_FRect dest,const char* textureKey)
         :GameObject(dest),
+        textureKey{ textureKey },
         m_sourceTransform{source}
     {   }
 
@@ -17,14 +18,14 @@ public:
 
 protected:
     SDL_Rect m_sourceTransform;
+    const char* textureKey;
 };
 
 class Static_Image : public SpriteObject
 {
 public: 
     Static_Image(const SDL_Rect source, const SDL_FRect dest, const char* textureKey,float scrollSpeed = 0)
-        :SpriteObject(source, dest),
-        textureKey{ textureKey },
+        :SpriteObject(source, dest, textureKey),
         scrollSpeed{scrollSpeed}
     {
 
@@ -33,7 +34,6 @@ public:
     virtual void Render() override;
 
 private:
-    const char* textureKey;
     float scrollSpeed;
 
 };

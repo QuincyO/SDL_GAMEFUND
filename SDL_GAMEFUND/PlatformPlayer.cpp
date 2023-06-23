@@ -13,8 +13,8 @@ const float PlatformPlayer::s_kMaxVelocityX = 350;
 const float PlatformPlayer::s_kMaxVelocityY = 2000;
 const float PlatformPlayer::s_kDragX = 0.8f;
 
-PlatformPlayer::PlatformPlayer(SDL_Rect sourceTransform, SDL_FRect destTransform)
-	:AnimatedSprite(sourceTransform,destTransform),
+PlatformPlayer::PlatformPlayer(SDL_Rect sourceTransform, SDL_FRect destTransform,const char* textureKey)
+	:AnimatedSprite(sourceTransform,destTransform,textureKey),
 	m_grounded{ false },
 	m_facingLeft{false},
 	m_accelX{0},

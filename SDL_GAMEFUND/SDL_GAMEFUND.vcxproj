@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -196,6 +196,7 @@ xcopy "$(ProjectDir)assets" "$(OutDir)assets" /s /e /i /y
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AnimatedSprite.cpp" />
+    <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="EventManager.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -204,6 +205,7 @@ xcopy "$(ProjectDir)assets" "$(OutDir)assets" /s /e /i /y
     <ClCompile Include="MathManager.cpp" />
     <ClCompile Include="PlatformPlayer.cpp" />
     <ClCompile Include="PlayButton.cpp" />
+    <ClCompile Include="Ship.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="SpriteObject.cpp" />
     <ClCompile Include="Statemanager.cpp" />
@@ -215,6 +217,7 @@ xcopy "$(ProjectDir)assets" "$(OutDir)assets" /s /e /i /y
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimatedSprite.h" />
+    <ClInclude Include="Bullet.h" />
     <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="EventManager.h" />
     <ClInclude Include="Game.h" />
@@ -222,6 +225,7 @@ xcopy "$(ProjectDir)assets" "$(OutDir)assets" /s /e /i /y
     <ClInclude Include="MathManager.h" />
     <ClInclude Include="PlatformPlayer.h" />
     <ClInclude Include="PlayButton.h" />
+    <ClInclude Include="Ship.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="SpriteObject.h" />
     <ClInclude Include="state.h" />

@@ -8,7 +8,7 @@ public:
 	virtual void Render() = 0;
 
 protected:
-	AnimatedSprite(SDL_Rect source, SDL_FRect dest);
+	AnimatedSprite(SDL_Rect source, SDL_FRect dest,const char* textureKey);
 
 
 	void SetAnimation(float frameRate, int startingSpriteIndex, int totalSprites, int sourceY = 0);
@@ -26,7 +26,7 @@ class Animated_Image : public AnimatedSprite
 {
 public:
 	Animated_Image(SDL_Rect source, SDL_FRect dest, const char* textureKey, float scrollSpeed = 0, int frameCount = 0)
-		:AnimatedSprite(source, dest),
+		:AnimatedSprite(source, dest, textureKey),
 		textureKey{ textureKey },
 		scrollSpeed{ scrollSpeed }
 	{

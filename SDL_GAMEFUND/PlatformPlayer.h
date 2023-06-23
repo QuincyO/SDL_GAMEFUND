@@ -25,7 +25,7 @@ private:
     static const float s_kDragX;
 
 public:
-    PlatformPlayer(SDL_Rect sourceTransform, SDL_FRect destTransform);
+    PlatformPlayer(SDL_Rect sourceTransform, SDL_FRect destTransform,const char* textureKey);
     ~PlatformPlayer();
     virtual void Update(float deltaTIme);
     virtual void Render();

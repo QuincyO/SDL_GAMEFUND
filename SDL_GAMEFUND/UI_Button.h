@@ -14,7 +14,6 @@ public:
     virtual void Render() override;
 
 protected:
-    std::string m_textureKey;
 
     enum class ButtonState
     {

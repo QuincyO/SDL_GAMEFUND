@@ -5,15 +5,15 @@ class Tile :
     public SpriteObject
 {
 public:
-    Tile(SDL_Rect source, SDL_FRect destination, bool obstacle, bool hazard)
-        :SpriteObject(source, destination),
+    Tile(SDL_Rect source, SDL_FRect destination,const char* textureKey, bool obstacle, bool hazard)
+        :SpriteObject(source, destination, textureKey),
         m_obstacle{ obstacle },
         m_hazard{ hazard }
     {}
 
     Tile* Clone()
     {
-        return new Tile(m_sourceTransform, m_destinationTransform, m_obstacle, m_hazard);
+        return new Tile(m_sourceTransform, m_destinationTransform, textureKey, m_obstacle, m_hazard);
     }
 
     bool IsObstacle() { return m_obstacle; }

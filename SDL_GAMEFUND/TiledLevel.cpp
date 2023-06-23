@@ -26,7 +26,7 @@ TiledLevel::TiledLevel(int rows, int cols, int tileWidth, int tileHeight,
 			m_tiles.emplace(key,
 				new Tile(
 					{ x * tileWidth,y*tileHeight,tileWidth,tileHeight },
-					{0.0f,0.0f,(float)tileWidth,(float)tileHeight},
+					{0.0f,0.0f,(float)tileWidth,(float)tileHeight},tileKey,
 					isObstacle, isHazard));
 				
 		}

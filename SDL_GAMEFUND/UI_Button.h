@@ -3,13 +3,14 @@
 #include "SoundManager.h"
 #include <string>
 #include <SDL.h>
+#include <SDL_ttf.h>
 
 
 class UI_Button :
     public SpriteObject
 {
 public:
-    UI_Button(SDL_Rect source, SDL_FRect  destination, const char* textureKey);
+    UI_Button(SDL_Rect source, SDL_FRect  destination, const char* textureKey,const char* buttonText);
     virtual void Update(float deltaTime) override;
     virtual void Render() override;
 
@@ -24,6 +25,10 @@ protected:
     };
 
     ButtonState m_state;
+
+    TTF_Font* m_font;
+
+    const char* buttonText;
 
     virtual void Execute() = 0;
 };

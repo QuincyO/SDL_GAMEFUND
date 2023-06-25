@@ -22,14 +22,14 @@ void Ship::Shoot(std::vector<Bullet*>& container)
 
 	if (m_ShipType == ShipType::FRIEND)
 	{
-		const char* FriendlyTextureKey = "PlayerLaser";
+		const char* FriendlyTextureKey = "PlayerBullet";
 		tempBullet = new Bullet(source, dest, FriendlyTextureKey);
 		container.push_back(new Bullet(tempBullet));
 		SoundManager::PlaySound("ShootFX1");
 	}
 	else if (m_ShipType == ShipType::ENEMY)
 	{
-		const char* EnemyTextureKey = "EnemyLaser";
+		const char* EnemyTextureKey = "EnemyBullet";
 
 		tempBullet = new Bullet(source, dest, EnemyTextureKey);
 		tempBullet->SetVelocity({ 0,200 });

@@ -4,6 +4,10 @@ void Bullet::Update(float deltaTime)
 {
 	m_destinationTransform.x += velocity.x * deltaTime;
 	m_destinationTransform.y += velocity.y * deltaTime;
+	if (m_destinationTransform.y <= 0)
+	{
+		m_destinationTransform.x = -500;
+	}
 }
 void Bullet::Render()
 {

@@ -11,6 +11,8 @@
 #include "CollisionManager.h"
 #include "SoundManager.h"
 #include "PlayButton.h"
+#include "ResumeButton.h"
+#include "TitleButton.h"
 #include "Ship.h"
 #include "Bullet.h"
 
@@ -21,48 +23,7 @@
 void TitleState::Enter()
 {
 	std::cout << "Entering TitleState..." << std::endl;
-	UI_Font = TTF_OpenFont("assets/fonts/kenpixel_blocks.ttf", 36);
-	if (UI_Font == NULL)
-	{
-		std::cout << "Font Failed to Load: " << SDL_GetError() << endl;
-	}
-	//Loading Music
-	SoundManager::LoadMusic("assets/spaceGame/ObservingTheStar.ogg", "GameMusic");
 
-	//Loading Sounds
-	SoundManager::LoadSound("assets/spaceGame/weaponfire6.wav", "ShootFX1");
-	SoundManager::LoadSound("assets/spaceGame/laserSmall_000.ogg", "ShootFX2");
-	SoundManager::LoadSound("assets/spaceGame/laserSmall_002.ogg", "ShootFX3");
-	SoundManager::LoadSound("assets/spaceGame/lowFrequency_explosion_000.ogg", "HitSound1");
-	SoundManager::LoadSound("assets/spaceGame/lowFrequency_explosion_001.ogg", "HitSound2");
-
-
-
-
-	//Loading Background Images
-			//3 Slowest 20px/s
-	TextureManager::Load("assets/Backgrounds/nebulawetstars.png", "BackgroundLayer3");
-	//2 Medium 60px/s
-	TextureManager::Load("assets/Backgrounds/nebuladrystars.png", "BackgroundLayer2");
-	//1 Fastest 150px/s 
-	TextureManager::Load("assets/Backgrounds/nebula2.png", "BackgroundLayer1"); //Animated
-
-	//Loading Player + EnemyPlayer Images
-	TextureManager::Load("assets/PNG/playerShip1_red.png", "Player");
-	TextureManager::Load("assets/PNG/enemyShip.png", "Enemy");
-
-	//Loading Explosions and Bullets
-	TextureManager::Load("assets/bigBooms/1.png", "Explosion1");
-	TextureManager::Load("assets/bigBooms/2.png", "Explosion2");
-	TextureManager::Load("assets/bigBooms/3.png", "Explosion3");
-	TextureManager::Load("assets/bigBooms/4.png", "Explosion4");
-	TextureManager::Load("assets/PNG/laserGreen.png", "EnemyLaser");
-	TextureManager::Load("assets/PNG/laserRed.png", "PlayerLaser");
-
-	//Loading Textures and Music SPECIFIC FOR TITLESCREEN
-	TextureManager::Load("assets/Backgrounds/menuBackground.png", "TitleBackground");
-	TextureManager::Load("assets/Images/Buttons/playSheet.png", "PlayButton");
-	TextureManager::Load("assets/sprites/TitleSprite.png", "GameTitle");
 	SoundManager::LoadMusic("assets/audio/Mutara.mp3", "TitleMusic");
 
 	SoundManager::PlayMusic("TitleMusic");
@@ -74,9 +35,17 @@ void TitleState::Enter()
 	m_objects.emplace("MenuBackground", new Static_Image(source, dest, "TitleBackground"));
 
 	source = { 0,0,192,128 };
-	dest = { Game::GetInstance().kWidth * .5f - source.w / 2,Game::GetInstance().kHeight * .8f,(float)source.w,(float)source.h };
+	SDL_QueryTexture(TextureManager::GetTexture("Buttons"), NULL, NULL, &source.w, &source.h);
+	source.h = source.h / 3;
 
-	m_objects.emplace("PlayButton", new PlayButton(source, dest, "PlayButton"));
+	dest.w = source.w;
+	dest.h = source.h;
+
+	dest.x = Game::GetInstance().kWidth * .5f - source.w / 2;
+	dest.y = Game::GetInstance().kHeight * .8f;
+
+
+	m_objects.emplace("PlayButton", new PlayButton(source, dest, "Buttons","Play"));
 
 	source = { 0,0,1184,108 };
 	dest.w = (float)source.w / 2;
@@ -135,9 +104,6 @@ void TitleState::Enter()
 
 		SoundManager::StopMusic();
 
-		TextureManager::Unload("PlayButton");
-		TextureManager::Unload("TitleBackground");
-		SoundManager::UnloadMusic("TitleMusic");
 
 		for (auto& object : m_objects)
 		{
@@ -380,23 +346,58 @@ void PauseState::Enter()
 	std::cout << "Entering Pause State..." << std::endl;
 
 
+
 	pauseBox.w = Game::GetInstance().kWidth * .65f;
 	pauseBox.h = Game::GetInstance().kHeight * .65f;
 
 	pauseBox.x =  Game::kWidth * .5f - pauseBox.w/2;
-	pauseBox.y = Game::GetInstance().kHeight * .5f-pauseBox.h/2;
+	pauseBox.y = Game::kHeight * .5f - pauseBox.h/2;
 
 
 	SoundManager::PauseMusic();
+	SDL_Rect source = { 0,0,0,0 };
+	SDL_FRect dest = { 0,0,0,0 };
+	source.w = 291;
+	source.h = 64;
+
+	dest.w = source.w;
+	dest.h = source.h;
+
+	dest.x = pauseBox.x + (pauseBox.w * .5 - dest.w/2);
+	dest.y = pauseBox.y + (pauseBox.h* .85f);
+
+
+
+
+	m_objects.emplace("ResumeButton", new ResumeButton(source,dest,"Buttons","Resume"));
+
+
+	SDL_QueryTexture(TextureManager::GetTexture("Pause"), NULL, NULL, &source.w, &source.h);
+	dest.y = pauseBox.y + (pauseBox.h* .15f);
+	
+	m_objects.emplace("PauseTitle", new Static_Image(source, dest, "Pause"));
 
 }
 
 void PauseState::Update(float deltaTime)
 {
+	for (auto object : m_objects)
+	{
+		object.second->Update(deltaTime);
+		if (StateManager::IsStateChaning())
+		{
+			return;
+		}
+	}
 	if (EventManager::KeyPressed(SDL_SCANCODE_R))
 	{
 		StateManager::PopState();
+		if (StateManager::IsStateChaning())
+		{
+			return;
+		}
 	}
+
 }
 
 void PauseState::Render()
@@ -410,6 +411,10 @@ void PauseState::Render()
 	SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 128, 128, 128, 128);
 	SDL_RenderFillRectF(Game::GetInstance().GetRenderer(), &pauseBox);
 
+	for (auto object : m_objects)
+	{
+		object.second->Render();
+	}
 
 
 }
@@ -417,7 +422,15 @@ void PauseState::Render()
 void PauseState::Exit()
 {
 	std::cout << "Exiting Pause State..." << std::endl;
+	//delete m_objects["ResumeButton"];
+	//delete m_objects["PauseTitle"];
 
+	for (auto object : m_objects)
+	{
+		delete object.second;
+		object.second = nullptr;
+	}
+	m_objects.clear();
 
 }
 
@@ -425,16 +438,48 @@ void PauseState::Exit()
 void WinState::Enter()
 {
 	std::cout << "Enteriing Win State" << std::endl;
-	SDL_Rect rect;
-	SDL_FRect frect;
-	TextureManager::Load("assets/real/Win.png", "winTitle");
-	TextureManager::Load("assets/real/SpaceMenu.png", "restartButton");
+	SDL_Rect source = { 0,0,0,0 };
+	SDL_FRect dest = { 0,0,0,0 };
+	SDL_QueryTexture(TextureManager::GetTexture("EndBackground"), NULL, NULL, &source.w, &source.h);
+	source.x = 355;
+	source.w = 197;
+
+	dest.w = Game::kWidth;
+	dest.h = Game::kHeight;
+
+	m_objects.emplace("WinBackground", new Static_Image(source, dest, "EndBackground"));
+
+	SDL_QueryTexture(TextureManager::GetTexture("Win"), NULL, NULL, &source.w, &source.h);
+	source.x = 0;
+	dest.w = source.w;
+	dest.h = source.h;
+	dest.x = Game::kWidth * .5f - dest.w / 2;
+	dest.y = Game::kWidth * .10f;
+
+	m_objects.emplace("WinTitle", new Static_Image(source, dest, "Win"));
+	SDL_QueryTexture(TextureManager::GetTexture("Buttons"), NULL, NULL, &source.w, &source.h);
+	source.x = 0;
+	source.h = source.h / 3;
+
+	dest.w = source.w;
+	dest.h = source.h;
+	dest.x = Game::kWidth * .5f - dest.w / 2;
+	dest.y = Game::kHeight * .90f;
+
+	m_objects.emplace("MenuButton", new TitleButton(source, dest, "Buttons", "Menu"));
+
+
 }
 
 void WinState::Update(float deltaTime)
 {
-	if (EventManager::KeyPressed(SDL_SCANCODE_SPACE))
+	for (auto object : m_objects)
 	{
+		object.second->Update(deltaTime);
+		if (StateManager::IsStateChaning())
+		{
+			return;
+		}
 	}
 }
 
@@ -444,16 +489,22 @@ void WinState::Render()
 	SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 0, 255, 0, 255);
 	SDL_RenderClear(Game::GetInstance().GetRenderer());
 
+	m_objects["WinBackground"]->Render();
+	m_objects["WinTitle"]->Render();
+	m_objects["MenuButton"]->Render();
+
 }
 
 void WinState::Exit()
 {
 	std::cout << "Exiting Win State" << std::endl;
 
+	for (auto object : m_objects)
+	{
+		delete object.second;
+		object.second = nullptr;
+	}
 
-	m_pMUS = Mix_LoadMUS("assets/Caketown1.mp3");
-	Mix_VolumeMusic(40);
-	Mix_PlayMusic(m_pMUS, -1);
 }
 
 void WinState::Resume()
@@ -464,35 +515,136 @@ void WinState::Resume()
 void LoseState::Enter()
 {
 	std::cout << "Entering Lose State" << std::endl;
-	SDL_Rect rect;
-	SDL_FRect frect;
-	TextureManager::Load("assets/real/Lost.png", "lossTitle");
-	TextureManager::Load("assets/real/SpaceMenu.png", "restartButton");
+	SDL_Rect source = { 0,0,0,0 };
+	SDL_FRect dest = { 0,0,0,0 };
+	SDL_QueryTexture(TextureManager::GetTexture("EndBackground"), NULL, NULL, &source.w, &source.h);
+	source.x = 100;
+	source.w = 200;
 
+	dest.w = Game::kWidth;
+	dest.h = Game::kHeight;
+
+	m_objects.emplace("LossBackground", new Static_Image(source, dest, "EndBackground"));
+
+	SDL_QueryTexture(TextureManager::GetTexture("Loss"), NULL, NULL, &source.w, &source.h);
+	source.x = 0;
+	dest.w = source.w;
+	dest.h = source.h;
+	dest.x = Game::kWidth * .5f - dest.w / 2;
+	dest.y = Game::kWidth * .10f;
+
+	m_objects.emplace("LossTitle", new Static_Image(source, dest, "Loss"));
+	SDL_QueryTexture(TextureManager::GetTexture("Buttons"), NULL, NULL, &source.w, &source.h);
+	source.x = 0;
+	source.h = source.h / 3;
+
+	dest.w = source.w;
+	dest.h = source.h;
+	dest.x = Game::kWidth * .5f - dest.w / 2;
+	dest.y = Game::kHeight * .90f;
+
+	m_objects.emplace("MenuButton", new TitleButton(source, dest, "Buttons", "Menu"));
 
 
 }
-
 
 void LoseState::Render()
 {
 	SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 255, 0, 0, 255);
 	SDL_RenderClear(Game::GetInstance().GetRenderer());
-
+	m_objects["LossBackground"]->Render();
+	m_objects["LossTitle"]->Render();
+	m_objects["MenuButton"]->Render();
 }
+
+void LoseState::Update(float deltaTime)
+{
+	for (auto object : m_objects)
+	{
+		object.second->Update(deltaTime);
+		if (StateManager::IsStateChaning())
+		{
+			return;
+		}
+	}
+}
+
 
 void LoseState::Exit()
 {
 	std::cout << "Exiting LoseState" << std::endl;
 
-
-	m_pMUS = Mix_LoadMUS("assets/Caketown1.mp3");
-	Mix_VolumeMusic(40);
-	Mix_PlayMusic(m_pMUS, -1);
+	for (auto object : m_objects)
+	{
+		delete object.second;
+		object.second = nullptr;
+	}
 
 }
 
 void LoseState::Resume()
 {
 	std::cout << "Resuming Lose State" << std::endl;
+}
+
+
+
+void LoadState::Enter()
+{
+	//Loading Music
+	 if(SoundManager::LoadMusic("assets/spaceGame/ObservingTheStar.ogg", "GameMusic"));
+
+	//Loading Sounds
+	if (SoundManager::LoadSound("assets/spaceGame/weaponfire6.wav", "ShootFX1"));
+	if (SoundManager::LoadSound("assets/spaceGame/laserSmall_000.ogg", "ShootFX2"));
+	if (SoundManager::LoadSound("assets/spaceGame/laserSmall_002.ogg", "ShootFX3"));
+	if (SoundManager::LoadSound("assets/spaceGame/lowFrequency_explosion_000.ogg", "HitSound1"));
+	if (SoundManager::LoadSound("assets/spaceGame/lowFrequency_explosion_001.ogg", "HitSound2"));
+	if (SoundManager::LoadSound("assets/Sound/Effects/on.ogg", "Click"))
+
+
+
+
+	//Loading Background Images
+			//3 Slowest 20px/s
+	TextureManager::Load("assets/Backgrounds/nebulawetstars.png", "BackgroundLayer3");
+	//2 Medium 60px/s
+	TextureManager::Load("assets/Backgrounds/nebuladrystars.png", "BackgroundLayer2");
+	//1 Fastest 150px/s 
+	TextureManager::Load("assets/Backgrounds/nebula2.png", "BackgroundLayer1"); //Animated
+
+	//Loading Player + EnemyPlayer Images
+	TextureManager::Load("assets/PNG/playerShip1_red.png", "Player");
+	TextureManager::Load("assets/PNG/enemyShip.png", "Enemy");
+
+	//Loading Explosions and Bullets
+	TextureManager::Load("assets/PNG/laserRed.png", "PlayerBullet");
+	TextureManager::Load("assets/PNG/laserGreen.png", "EnemyBullet");
+
+
+	//Loading Textures and Music SPECIFIC FOR TITLESCREEN
+	TextureManager::Load("assets/Backgrounds/menuBackground.png", "TitleBackground");
+	TextureManager::Load("assets/Images/Buttons/buttons.png", "Buttons");
+	TextureManager::Load("assets/sprites/TitleSprite.png", "GameTitle");
+	TextureManager::Load("assets/real/Win.png", "Win");
+	TextureManager::Load("assets/real/Lost.png", "Loss");
+	TextureManager::Load("assets/real/Pause.png", "Pause");
+	TextureManager::Load("assets/real/EndBackground.png", "EndBackground");
+}
+
+void LoadState::Update(float deltaTime)
+{
+	StateManager::ChangeState(new TitleState);
+}
+
+void LoadState::Render()
+{
+}
+
+void LoadState::Exit()
+{
+}
+
+void LoadState::Resume()
+{
 }

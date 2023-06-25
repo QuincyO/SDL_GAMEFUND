@@ -103,22 +103,26 @@ public:
 	virtual void Exit() override;
 	virtual void Resume() override;
 
-	Mix_Music* m_pMUS;
 private:
-	SpriteObject* m_background;
-	SpriteObject* m_button;
-	SpriteObject* m_title;
 };
 
 class LoseState : public State
 {
 public:
 	virtual void Enter() override;
-	virtual void Update(float deltaTime) override {};
+	virtual void Update(float deltaTime) override;
 	virtual void Render() override;
 	virtual void Exit() override;
 	virtual void Resume() override;
-	Mix_Music* m_pMUS;
 private:
 
+};
+
+class LoadState : public State
+{
+	virtual void Enter() override;
+	virtual void Update(float deltaTime) override;
+	virtual void Render() override ;
+	virtual void Exit() override ;
+	virtual void Resume() override ;
 };

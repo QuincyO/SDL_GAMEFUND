@@ -71,7 +71,7 @@ int Game::Init(const char* Title)
 	else return 5;
 
 	EventManager::Init();
-	StateManager::PushState(new TitleState());
+	StateManager::PushState(new LoadState());
 	m_keyStates = SDL_GetKeyboardState(nullptr);
 	m_running = true;
 	return 0;

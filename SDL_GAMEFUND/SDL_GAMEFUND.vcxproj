@@ -136,13 +136,13 @@ xcopy "$(ProjectDir)assets" "$(OutDir)assets" /s /e /i /y</Command>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Program Files %28x86%29\Visual Leak Detector\include;%(AdditionalIncludeDirectories);$(SolutionDir)lib\SDL_Mixer\include;$(SolutionDir)lib\SDL_Image\include;$(SolutionDir)lib\SDL\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files %28x86%29\Visual Leak Detector\include;%(AdditionalIncludeDirectories);$(SolutionDir)lib\SDL_Mixer\include;$(SolutionDir)lib\SDL_TTF\include;$(SolutionDir)lib\SDL_Image\include;$(SolutionDir)lib\SDL\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)lib\SDL_Mixer\lib\x64;$(SolutionDir)lib\SDL_Image\lib\x64;C:\Program Files %28x86%29\Visual Leak Detector\lib\Win64;$(SolutionDir)lib\SDL\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\SDL_Mixer\lib\x64;$(SolutionDir)lib\SDL_TTF\lib\x64;$(SolutionDir)lib\SDL_Image\lib\x64;C:\Program Files %28x86%29\Visual Leak Detector\lib\Win64;$(SolutionDir)lib\SDL\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -153,6 +153,7 @@ xcopy "$(ProjectDir)assets" "$(OutDir)assets" /s /e /i /y</Command>
 
 copy "$(SolutionDir)lib\SDL_Image\lib\x64\SDL2_image.dll" "$(OutDir)"
 copy "$(SolutionDir)lib\SDL_Mixer\lib\x64\SDL2_mixer.dll" "$(OutDir)"
+copy "$(SolutionDir)lib\SDL_TTF\lib\x64\SDL2_ttf.dll" "$(OutDir)"
 
 
 
@@ -168,15 +169,15 @@ xcopy "$(ProjectDir)assets" "$(OutDir)assets" /s /e /i /y
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Program Files %28x86%29\Visual Leak Detector\include;%(AdditionalIncludeDirectories);$(SolutionDir)lib\SDL_Mixer\include;$(SolutionDir)lib\SDL_Image\include;$(SolutionDir)lib\SDL\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files %28x86%29\Visual Leak Detector\include;%(AdditionalIncludeDirectories);$(SolutionDir)lib\SDL_Mixer\include;$(SolutionDir)lib\SDL_TTF\include;$(SolutionDir)lib\SDL_Image\include;$(SolutionDir)lib\SDL\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)lib\SDL_Mixer\lib\x64;$(SolutionDir)lib\SDL_Image\lib\x64;C:\Program Files %28x86%29\Visual Leak Detector\lib\Win64;$(SolutionDir)lib\SDL\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\SDL_Mixer\lib\x64;$(SolutionDir)lib\SDL_TTF\lib\x64;$(SolutionDir)lib\SDL_Image\lib\x64;C:\Program Files %28x86%29\Visual Leak Detector\lib\Win64;$(SolutionDir)lib\SDL\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -187,6 +188,7 @@ xcopy "$(ProjectDir)assets" "$(OutDir)assets" /s /e /i /y
 
 copy "$(SolutionDir)lib\SDL_Image\lib\x64\SDL2_image.dll" "$(OutDir)"
 copy "$(SolutionDir)lib\SDL_Mixer\lib\x64\SDL2_mixer.dll" "$(OutDir)"
+copy "$(SolutionDir)lib\SDL_TTF\lib\x64\SDL2_ttf.dll" "$(OutDir)"
 
 
 

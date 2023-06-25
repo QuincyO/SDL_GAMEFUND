@@ -1,8 +1,10 @@
 #pragma once
 #include <SDL.h>
+#include <SDL_ttf.h>
 #include <vector>
 #include <unordered_map>
 #include <string>
+#include "Game.h"
 
 #include "SDL_image.h"
 #include "SDL_mixer.h"
@@ -29,6 +31,7 @@ public:
 	virtual void Resume() {}
 
 	std::unordered_map<std::string, GameObject*> m_objects;
+	TTF_Font* UI_Font = nullptr;
 protected:
 };
 
@@ -44,8 +47,6 @@ public:
 
 	float timer;
 private:
-	Mix_Chunk* m_pMix;
-	Mix_Music* m_pMUS;
 };
 
 
@@ -88,7 +89,8 @@ public:
 	virtual void Exit() override;
 private:
 	//Pause Box
-	SDL_Rect rect = { 1280/2 - (512/2),128,512,512};
+	SDL_FRect pauseBox ;
+
 };
 
 

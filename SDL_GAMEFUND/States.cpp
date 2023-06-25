@@ -21,7 +21,11 @@
 void TitleState::Enter()
 {
 	std::cout << "Entering TitleState..." << std::endl;
-
+	UI_Font = TTF_OpenFont("assets/fonts/kenpixel_blocks.ttf", 36);
+	if (UI_Font == NULL)
+	{
+		std::cout << "Font Failed to Load: " << SDL_GetError() << endl;
+	}
 	//Loading Music
 	SoundManager::LoadMusic("assets/spaceGame/ObservingTheStar.ogg", "GameMusic");
 
@@ -259,6 +263,11 @@ void TitleState::Enter()
 
 void GameState::Update(float deltaTime)
 {
+	if (EventManager::KeyPressed(SDL_SCANCODE_P))
+	{
+		StateManager::PushState(new PauseState);
+	}
+
 
 	for (auto objects : m_backgroundObjects)
 	{
@@ -369,14 +378,16 @@ void GameState::Resume()
 void PauseState::Enter()
 {
 	std::cout << "Entering Pause State..." << std::endl;
-	TextureManager::Load("assets/real/Pause.png", "pauseTitle");
-	TextureManager::Load("assets/real/Resume.png", "resumeButton");
-	SDL_Rect tRect;
-	SDL_FRect frect;
 
 
+	pauseBox.w = Game::GetInstance().kWidth * .65f;
+	pauseBox.h = Game::GetInstance().kHeight * .65f;
 
-	Mix_PauseMusic();
+	pauseBox.x =  Game::kWidth * .5f - pauseBox.w/2;
+	pauseBox.y = Game::GetInstance().kHeight * .5f-pauseBox.h/2;
+
+
+	SoundManager::PauseMusic();
 
 }
 
@@ -397,7 +408,7 @@ void PauseState::Render()
 	//Now Render the Rest of PauseState
 	SDL_SetRenderDrawBlendMode(Game::GetInstance().GetRenderer(), SDL_BLENDMODE_BLEND);
 	SDL_SetRenderDrawColor(Game::GetInstance().GetRenderer(), 128, 128, 128, 128);
-	SDL_RenderFillRect(Game::GetInstance().GetRenderer(), &rect);
+	SDL_RenderFillRectF(Game::GetInstance().GetRenderer(), &pauseBox);
 
 
 

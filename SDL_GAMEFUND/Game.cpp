@@ -62,7 +62,13 @@ int Game::Init(const char* Title)
 		cout << "Sound Manager Init Good!" << endl;
 
 	}
-	else Game::Quit();
+	else return 4;
+
+	if (TTF_Init() == 0)
+	{
+		std::cout << "TTF Load Good\n";
+	}
+	else return 5;
 
 	EventManager::Init();
 	StateManager::PushState(new TitleState());
